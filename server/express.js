@@ -4,6 +4,7 @@ import cookieParser from "cookie-parser";
 import compress from "compression";
 import cors from "cors";
 import helmet from "helmet";
+import Template from "../template.js";
 
 const app = express();
 
@@ -13,5 +14,9 @@ app.use(cookieParser());
 app.use(compress());
 app.use(cors());
 app.use(helmet());
+
+app.get("/", (req, res) => {
+  res.status(200).send(Template());
+});
 
 export default app;
