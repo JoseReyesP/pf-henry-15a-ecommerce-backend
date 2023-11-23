@@ -1,7 +1,7 @@
-import User from "../models/user.model";
+import User from "../models/user.model.js";
 import jwt from "jsonwebtoken";
-import expressJwt from "express-jwt";
-import config from "./../../config/config";
+import { expressjwt } from "express-jwt";
+import config from "./../../config/config.js";
 
 const signin = async (req, res) => {
   // The POST request object receives the email and password in req.body. This email is
@@ -41,11 +41,12 @@ const signout = (req, res) => {
   res.clearCookie("t");
   return res.status("200").json({ message: "signed out" });
 };
-const requireSignin = expressJwt({
+const requireSignin = expressjwt({
   // We can add requireSignin to any route that should be protected against
   // unauthenticated access.
   secret: config.jwtSecret,
   userProperty: "auth",
+  algorithms: ["HS256"],
 });
 const hasAuthorization = (req, res, next) => {
   const authorized = req.profile && req.auth && req.profile._id == req.auth._id;

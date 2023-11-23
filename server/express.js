@@ -6,6 +6,7 @@ import cors from "cors";
 import helmet from "helmet";
 import Template from "../template.js";
 import authRoutes from "./routes/auth.routes.js";
+import userRoutes from "./routes/user.routes.js";
 
 const app = express();
 
@@ -21,6 +22,8 @@ app.get("/", (req, res) => {
 });
 
 app.use("/", authRoutes);
+
+app.use("/", userRoutes);
 
 app.use((err, req, res, next) => {
   if (err.name === "UnauthorizedError") {

@@ -1,14 +1,15 @@
-import User from "../models/user.model";
-import { extend } from "lodash";
-import errorHandler from "./error.controller";
+import User from "../models/user.model.js";
+import extend from "lodash";
+//import errorHandler from "./error.controller";
 
 const create = async (req, res) => {
   const user = new User(req.body);
+  console.log("create: ", user);
   try {
     await user.save();
     return res.status(200).json({ message: "Successfully signed up!" });
   } catch (err) {
-    return res.status(400).json({ error: errorHandler.getErrorMessage(err) });
+    return res.status(400).json({ error: err });
   }
 };
 const list = async (req, res) => {
@@ -16,7 +17,7 @@ const list = async (req, res) => {
     let users = await User.find().select("name email updated created");
     res.json(users);
   } catch (err) {
-    return res.status(400).json({ error: errorHandler.getErrorMessage(err) });
+    return res.status(400).json({ error: err });
   }
 };
 const userByID = async (req, res, next, id) => {
@@ -63,7 +64,7 @@ const update = async (req, res) => {
     res.json(user);
   } catch (err) {
     return read.status(400).json({
-      error: errorHandler.getErrorMessage(err),
+      error: err,
     });
   }
 };
@@ -79,7 +80,7 @@ const remove = async (req, res) => {
     res.json(deletedUser);
   } catch (err) {
     return res.status(400).json({
-      error: errorHandler.getErrorMessage(err),
+      error: err,
     });
   }
 };
