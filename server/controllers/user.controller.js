@@ -33,7 +33,6 @@ const userByID = async (req, res, next, id) => {
       });
     }
     req.profile = user;
-    console.log("user controller: ", req.profile);
     next();
   } catch (error) {
     return res.status(400).json({
@@ -56,10 +55,9 @@ const update = async (req, res) => {
   // update the user data. Before saving this updated user to the database, the updated
   // field is populated with the current date to reflect the last updated timestamp
   try {
-    const user = new User(req.profile);
-    //let user = req.profile;
-    // user = extend(user, req.body);
-    // user.update = Date.now();
+    let user = req.profile;
+    user = extend(user, req.body);
+    user.update = Date.now();
     await user.save();
     user.hashed_password = undefined;
     user.salt = undefined;
@@ -76,8 +74,7 @@ const remove = async (req, res) => {
   // client is returned the deleted user object in the response.
   try {
     let user = req.profile;
-    console.log("user controller remove: ", user);
-    let deletedUser = await user.remove();
+    const deletedUser = await User.findByIdAndDelete(req.profile._id);
     deletedUser.hashed_password = undefined;
     deletedUser.salt = undefined;
     res.json(deletedUser);

@@ -10,7 +10,6 @@ const signin = async (req, res) => {
   // received in req.body from the client.
   try {
     let user = await User.findOne({ email: req.body.email });
-    console.log(user);
     if (!user) return res.status(401).json({ error: "User not found" });
     if (!user.authenticate(req.body.password)) {
       return res.status(401).send({ error: "Email and password don't match." });
@@ -38,7 +37,7 @@ const signout = (req, res) => {
   // an optional endpoint and not really necessary for auth purposes if cookies are not
   // used at all in the frontend.
   res.clearCookie("t");
-  return res.status("200").json({ message: "signed out" });
+  return res.status(200).json({ message: "signed out" });
 };
 const requireSignin = expressjwt({
   // We can add requireSignin to any route that should be protected against
@@ -50,7 +49,7 @@ const requireSignin = expressjwt({
 const hasAuthorization = (req, res, next) => {
   const authorized = req.profile && req.auth && req.profile._id == req.auth._id;
   if (!authorized) {
-    return res.status("403").json({
+    return res.status(403).json({
       error: "User is not authorized",
     });
   }
