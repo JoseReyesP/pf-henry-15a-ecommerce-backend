@@ -10,11 +10,10 @@ const signin = async (req, res) => {
   // received in req.body from the client.
   try {
     let user = await User.findOne({ email: req.body.email });
-    if (!user) return res.status("401").json({ error: "User not found" });
+    console.log(user);
+    if (!user) return res.status(401).json({ error: "User not found" });
     if (!user.authenticate(req.body.password)) {
-      return res
-        .status("401")
-        .send({ error: "Email and password don't match." });
+      return res.status(401).send({ error: "Email and password don't match." });
     }
     //  If the password is successfully verified, the JWT module is used to generate a signed
     // JWT using a secret key and the user's _id value.
@@ -30,7 +29,7 @@ const signin = async (req, res) => {
       },
     });
   } catch (err) {
-    return res.status("401").json({ error: "Could not sign in" });
+    return res.status(401).json({ error: "Could not sign in" });
   }
 };
 
