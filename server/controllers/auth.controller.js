@@ -47,6 +47,7 @@ const requireSignin = expressjwt({
   algorithms: ["HS256"],
 });
 const hasAuthorization = (req, res, next) => {
+  //console.log(req.profile, req.auth, req.profile._id, req.auth._id);
   const authorized = req.profile && req.auth && req.profile._id == req.auth._id;
   if (!authorized) {
     return res.status(403).json({
@@ -56,4 +57,13 @@ const hasAuthorization = (req, res, next) => {
   next();
 };
 
-export default { signin, signout, requireSignin, hasAuthorization };
+const isAdmin = (req, res, next) => {
+  const { role } = req.profile;
+  if (!role.includes("admin"))
+    return res
+      .status(403)
+      .json({ message: "Forbidden, you are not an Admin." });
+  return res.status(200).json({ message: true });
+};
+
+export default { signin, signout, requireSignin, hasAuthorization, isAdmin };

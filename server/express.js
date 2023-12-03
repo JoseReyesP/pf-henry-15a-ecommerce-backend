@@ -7,6 +7,7 @@ import helmet from "helmet";
 import Template from "../template.js";
 import authRoutes from "./routes/auth.routes.js";
 import userRoutes from "./routes/user.routes.js";
+import adminRoutes from "./routes/admin.routes.js";
 
 const app = express();
 
@@ -24,6 +25,8 @@ app.get("/", (req, res) => {
 app.use("/", authRoutes);
 
 app.use("/", userRoutes);
+
+app.use("/", adminRoutes);
 
 app.use((err, req, res, next) => {
   if (err.name === "UnauthorizedError") {

@@ -1,5 +1,4 @@
 import User from "../models/user.model.js";
-import extend from "lodash";
 import errorHandler from "../helpers/dbErrorHandlers.js";
 
 const create = async (req, res) => {
@@ -13,7 +12,7 @@ const create = async (req, res) => {
 };
 const list = async (req, res) => {
   try {
-    let users = await User.find().select("name email updated created");
+    let users = await User.find().select("name lastname email updated created");
     res.json(users);
   } catch (err) {
     return res.status(400).json({ error: errorHandler.getErrorMessage(err) });
@@ -22,9 +21,7 @@ const list = async (req, res) => {
 const userByID = async (req, res, next, id) => {
   // If a matching user is found in the database, the user object is appended to the request
   // object in the profile key. Then, the next() middleware is used to propagate control
-  // to the next relevant controller function. For example, if the original request was to
-  // read a user profile, the next() call in userByID would go to the read controller
-  // function
+  // to the next controller function.
   try {
     let user = await User.findById(id);
     if (!user) {
@@ -50,15 +47,10 @@ const read = (req, res) => {
   return res.json(req.profile);
 };
 const update = async (req, res) => {
-  // The update function retrieves the user details from req.profile and then uses the
-  // lodash module to extend and merge the changes that came in the request body to
-  // update the user data. Before saving this updated user to the database, the updated
-  // field is populated with the current date to reflect the last updated timestamp
   try {
     let user = req.profile;
-    user = extend(user, req.body);
-    user.update = Date.now();
-    await user.save();
+    req.body = { ...req.body, updated: Date.now() };
+    await User.findByIdAndUpdate(user._id, { $set: req.body }, { new: true });
     user.hashed_password = undefined;
     user.salt = undefined;
     res.json(user);
@@ -69,11 +61,7 @@ const update = async (req, res) => {
   }
 };
 const remove = async (req, res) => {
-  // The remove function retrieves the user from req.profile and uses the remove()
-  // query to delete the user from the database. On successful deletion, the requesting
-  // client is returned the deleted user object in the response.
   try {
-    let user = req.profile;
     const deletedUser = await User.findByIdAndDelete(req.profile._id);
     deletedUser.hashed_password = undefined;
     deletedUser.salt = undefined;
