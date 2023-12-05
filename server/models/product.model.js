@@ -8,7 +8,6 @@ const ProductSchema = new mongoose.Schema({
   },
   price: {
     type: Number,
-    trim: true,
     required: "Price is required",
   },
   description: {
