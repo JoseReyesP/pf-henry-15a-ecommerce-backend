@@ -3,10 +3,10 @@ export default () => {
     <html lang="en">
     <head>
     <meta charset="utf-8">
-    <title>MERN Skeleton</title>
+    <title>PF-15a</title>
     </head>
     <body>
-    <div id="root">Hello World</div>
+    <div id="root">Welcome admin, this is your dashboard</div>
     </body>
     </html>`;
 };
