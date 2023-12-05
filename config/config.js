@@ -13,7 +13,7 @@
  const config = {
    env: process.env.NODE_ENV,
    port: process.env.PORT
-   jwtSecret: process.env.JWT_SECRET,
+   jwtSecret: process.env.JWT_SECRET || "YOUR_secret_key",
    mongoUri:
      process.env.mongoUri,
 };
