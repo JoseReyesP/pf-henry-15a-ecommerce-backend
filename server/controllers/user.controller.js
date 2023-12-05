@@ -2,6 +2,7 @@ import User from "../models/user.model.js";
 import errorHandler from "../helpers/dbErrorHandlers.js";
 
 const create = async (req, res) => {
+  console.log("creating user...");
   const user = new User(req.body);
   try {
     await user.save();
