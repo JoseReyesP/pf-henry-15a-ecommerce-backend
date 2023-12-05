@@ -10,12 +10,12 @@
 //};
 
 // this is mongodb Atlas connection
- const config = {
-   env: process.env.NODE_ENV,
-   port: process.env.PORT
-   jwtSecret: process.env.JWT_SECRET || "YOUR_secret_key",
-   mongoUri:
-     process.env.mongoUri,
+const config = {
+  env: process.env.NODE_ENV,
+  port: process.env.PORT,
+  jwtSecret: process.env.JWT_SECRET,
+  mongoUri:process.env.mongoUri
+   ,
 };
 
 export default config;
