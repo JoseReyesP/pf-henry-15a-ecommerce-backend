@@ -29,6 +29,7 @@ app.use("/", authRoutes);
 app.use("/", userRoutes);
 app.use("/", adminRoutes);
 app.use("/", categoryRoutes);
+app.use("/", productRoutes);
 
 // Error handling
 app.use((err, req, res, next) => {
