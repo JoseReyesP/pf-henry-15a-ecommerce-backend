@@ -1,18 +1,22 @@
 import express from "express";
 import categoryCtrl from "../controllers/category.controller.js";
-import authCtrl from "../controllers/auth.controller.js"
+import authCtrl from "../controllers/auth.controller.js";
 
 const router = express.Router();
 
 router
-    .route("/api/category")
-    .get(categoryCtrl.list)
-    .post(authCtrl.requireSignin, categoryCtrl.create);
+  .route("/api/category")
+  .get(categoryCtrl.list)
+  .post(authCtrl.requireSignin, authCtrl.hasAuthorization, categoryCtrl.create);
 
 router
-    .route("/api/category/:categoryId")
-    .put(authCtrl.requireSignin, categoryCtrl.update)
-    .delete(authCtrl.requireSignin, categoryCtrl.softDelete);
+  .route("/api/category/:categoryId")
+  .put(authCtrl.requireSignin, authCtrl.hasAuthorization, categoryCtrl.update)
+  .delete(
+    authCtrl.requireSignin,
+    authCtrl.hasAuthorization,
+    categoryCtrl.softDelete
+  );
 
 router.param("categoryId", categoryCtrl.categoryById);
 
