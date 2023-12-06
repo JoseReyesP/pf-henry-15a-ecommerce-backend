@@ -59,6 +59,10 @@ const hasAuthorization = async (req, res, next) => {
         error: "User is not authorized",
       });
     }
+  } else if (req.body.role && req.profile.role === "user") {
+    return res.status(403).json({
+      error: "Nice try champ, but you are not an Admin",
+    });
   }
   next();
 };
