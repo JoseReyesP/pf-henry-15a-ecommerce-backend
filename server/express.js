@@ -28,6 +28,7 @@ app.get("/", (req, res) => {
 app.use("/", authRoutes);
 app.use("/", userRoutes);
 app.use("/", adminRoutes);
+app.use("/", categoryRoutes);
 
 // Error handling
 app.use((err, req, res, next) => {
