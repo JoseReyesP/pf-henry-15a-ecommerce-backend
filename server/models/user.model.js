@@ -21,7 +21,7 @@ const UserSchema = new mongoose.Schema({
   },
   role: {
     type: String,
-    required: "User role is required",
+    default: "user",
   },
   created: {
     type: Date,
