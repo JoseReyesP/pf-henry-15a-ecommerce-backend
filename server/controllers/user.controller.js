@@ -2,7 +2,6 @@ import User from "../models/user.model.js";
 import errorHandler from "../helpers/dbErrorHandlers.js";
 
 const create = async (req, res) => {
-  console.log("creating user...");
   const user = new User(req.body);
   try {
     await user.save();
@@ -13,7 +12,9 @@ const create = async (req, res) => {
 };
 const list = async (req, res) => {
   try {
-    let users = await User.find().select("name lastname email updated created");
+    let users = await User.find({ isDeleted: false }).select(
+      "name lastname email updated created"
+    );
     res.json(users);
   } catch (err) {
     return res.status(400).json({ error: errorHandler.getErrorMessage(err) });
@@ -52,9 +53,9 @@ const update = async (req, res) => {
     let user = req.profile;
     req.body = { ...req.body, updated: Date.now() };
     await User.findByIdAndUpdate(user._id, { $set: req.body }, { new: true });
-    user.hashed_password = undefined;
-    user.salt = undefined;
-    res.json(user);
+    res
+      .status(200)
+      .json({ message: "the profile has been updated successfuly!" });
   } catch (err) {
     return res.status(400).json({
       error: err.message,
@@ -63,10 +64,22 @@ const update = async (req, res) => {
 };
 const remove = async (req, res) => {
   try {
-    const deletedUser = await User.findByIdAndDelete(req.profile._id);
-    deletedUser.hashed_password = undefined;
-    deletedUser.salt = undefined;
-    res.json(deletedUser);
+    let user = req.profile;
+    if (req.body.type == "soft") {
+      await user.findByIdAndUpdate(
+        user._id,
+        { isDeleted: true },
+        { new: true }
+      );
+      res
+        .status(200)
+        .json({ message: `Product ${user._id} has been SoftDeleted!` });
+    } else {
+      await Product.findByIdAndDelete(product._id);
+      res
+        .status(200)
+        .json({ message: `Product ${user._id} has been Deleted!` });
+    }
   } catch (err) {
     return res.status(400).json({
       error: err.message,
@@ -75,4 +88,3 @@ const remove = async (req, res) => {
 };
 
 export default { create, userByID, read, list, remove, update };
-// adding development

@@ -1,4 +1,5 @@
 import User from "../models/user.model.js";
+import userCtrl from "../controllers/user.controller.js";
 import jwt from "jsonwebtoken";
 import { expressjwt } from "express-jwt";
 import config from "./../../config/config.js";
@@ -46,17 +47,31 @@ const requireSignin = expressjwt({
   userProperty: "auth",
   algorithms: ["HS256"],
 });
-const hasAuthorization = (req, res, next) => {
+const hasAuthorization = async (req, res, next) => {
   const authorized = req.profile && req.auth && req.profile._id == req.auth._id;
   if (!authorized) {
+    // here we check if the user trying to modify the profile is an Admin
+    try {
+      const adminProfile = await User.findById(req.auth._id);
+      const { role } = adminProfile;
+      if (role !== "admin") {
+        // if the modifier profile is not an admin then is not authorized
+        return res.status(403).json({
+          error: "User is not authorized",
+        });
+      }
+    } catch (err) {
+      return res.status(400).json({ message: "User not found" });
+    }
+  } else if (req.body.role && req.profile.role === "user") {
     return res.status(403).json({
-      error: "User is not authorized",
+      error: "Nice try champ, but you are not an Admin",
     });
   }
   next();
 };
 
-const isAdmin = (req, res, next) => {
+const isAdmin = (req, res) => {
   const { role } = req.profile;
   if (!role.includes("admin"))
     return res

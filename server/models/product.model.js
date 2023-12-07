@@ -1,4 +1,5 @@
 import mongoose, { mongo } from "mongoose";
+const Schema = mongoose.Schema;
 
 const ProductSchema = new mongoose.Schema({
   title: {
@@ -8,7 +9,6 @@ const ProductSchema = new mongoose.Schema({
   },
   price: {
     type: Number,
-    trim: true,
     required: "Price is required",
   },
   description: {
@@ -18,6 +18,14 @@ const ProductSchema = new mongoose.Schema({
   image: {
     type: String,
     required: "Image is required",
+  },
+  category: {
+    type: Schema.Types.ObjectId,
+    ref: "Category",
+  },
+  isDeleted: {
+    type: Boolean,
+    default: false,
   },
   created: {
     type: Date,

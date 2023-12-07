@@ -10,7 +10,7 @@ const UserSchema = new mongoose.Schema({
   lastname: {
     type: String,
     trim: true,
-    required: "Name is required",
+    required: "Lastname is required",
   },
   email: {
     type: String,
@@ -21,7 +21,11 @@ const UserSchema = new mongoose.Schema({
   },
   role: {
     type: String,
-    required: "User role is required",
+    default: "user",
+  },
+  isDeleted: {
+    type: Boolean,
+    default: false,
   },
   created: {
     type: Date,

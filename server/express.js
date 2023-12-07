@@ -9,6 +9,7 @@ import authRoutes from "./routes/auth.routes.js";
 import userRoutes from "./routes/user.routes.js";
 import adminRoutes from "./routes/admin.routes.js";
 import productRoutes from "./routes/product.routes.js";
+import categoryRoutes from "./routes/category.routes.js";
 
 const app = express();
 
@@ -27,6 +28,7 @@ app.get("/", (req, res) => {
 app.use("/", authRoutes);
 app.use("/", userRoutes);
 app.use("/", adminRoutes);
+app.use("/", categoryRoutes);
 app.use("/", productRoutes);
 
 // Error handling
