@@ -12,9 +12,10 @@ const create = async (req, res) => {
 };
 const list = async (req, res) => {
   try {
-    let products = await Product.find({ isDeleted: false })
-      .select("title price description category updated created")
-      .populate({ path: "category", select: "name" });
+    let products = await Product.find({ isDeleted: false }).populate({
+      path: "category",
+      select: "name",
+    });
     res.json(products);
   } catch (err) {
     return res.status(400).json({ error: err.message });
@@ -29,7 +30,6 @@ const productByID = async (req, res, next, id) => {
       });
     }
     req.product = product;
-    console.log("productByID : ", req.product, req.type, req.body);
     next();
   } catch (error) {
     return res.status(400).json({

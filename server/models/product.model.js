@@ -23,6 +23,9 @@ const ProductSchema = new mongoose.Schema({
     type: Schema.Types.ObjectId,
     ref: "Category",
   },
+  stock: {
+    type: Number,
+  },
   isDeleted: {
     type: Boolean,
     default: false,
