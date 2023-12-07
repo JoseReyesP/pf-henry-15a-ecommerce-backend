@@ -12,6 +12,7 @@ import productRoutes from "./routes/product.routes.js";
 import categoryRoutes from "./routes/category.routes.js";
 import paginateRoutes from "./routes/paginate.routes.js";
 import reviewRoutes from "./routes/review.routes.js";
+import searchRoutes from "./routes/search.routes.js";
 
 const app = express();
 
@@ -34,6 +35,7 @@ app.use("/", categoryRoutes);
 app.use("/", productRoutes);
 app.use("/", paginateRoutes);
 app.use("/", reviewRoutes);
+app.use("/", searchRoutes);
 
 // Error handling
 app.use((err, req, res, next) => {
