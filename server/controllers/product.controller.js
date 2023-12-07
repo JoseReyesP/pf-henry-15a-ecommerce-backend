@@ -12,10 +12,16 @@ const create = async (req, res) => {
 };
 const list = async (req, res) => {
   try {
-    let products = await Product.find({ isDeleted: false }).populate({
-      path: "category",
-      select: "name",
-    });
+    let products = await Product.find({ isDeleted: false })
+      .populate({
+        path: "category",
+        select: "name",
+      })
+      .populate({
+        path: "reviews",
+        select: "user rating comment",
+        populate: { path: "user", select: "name lastname email" },
+      });
     res.json(products);
   } catch (err) {
     return res.status(400).json({ error: err.message });

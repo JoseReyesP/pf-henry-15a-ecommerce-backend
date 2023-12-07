@@ -29,7 +29,7 @@ const ProductSchema = new mongoose.Schema({
   reviews: [
     {
       type: Schema.Types.ObjectId,
-      ref: "ProductReview",
+      ref: "Review",
     },
   ],
   isDeleted: {
