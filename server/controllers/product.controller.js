@@ -12,12 +12,12 @@ const create = async (req, res) => {
 };
 const list = async (req, res) => {
   try {
-    let products = await Product.find().select(
-      "title price description updated created"
-    );
+    let products = await Product.find({ isDeleted: false })
+      .select("title price description category updated created")
+      .populate({ path: "category", select: "name" });
     res.json(products);
   } catch (err) {
-    return res.status(400).json({ error: errorHandler.getErrorMessage(err) });
+    return res.status(400).json({ error: err.message });
   }
 };
 const productByID = async (req, res, next, id) => {
@@ -29,6 +29,7 @@ const productByID = async (req, res, next, id) => {
       });
     }
     req.product = product;
+    console.log("productByID : ", req.product, req.type, req.body);
     next();
   } catch (error) {
     return res.status(400).json({
@@ -59,8 +60,23 @@ const update = async (req, res) => {
 };
 const remove = async (req, res) => {
   try {
-    const deletedProduct = await Product.findByIdAndDelete(req.product._id);
-    res.json(deletedProduct);
+    let product = req.product;
+    console.log(req.body);
+    if (req.body.type == "soft") {
+      await Product.findByIdAndUpdate(
+        product._id,
+        { isDeleted: true },
+        { new: true }
+      );
+      res
+        .status(200)
+        .json({ message: `Product ${product._id} has been SoftDeleted!` });
+    } else {
+      await Product.findByIdAndDelete(product._id);
+      res
+        .status(200)
+        .json({ message: `Product ${product._id} has been Deleted!` });
+    }
   } catch (err) {
     return res.status(400).json({
       error: err.message,
