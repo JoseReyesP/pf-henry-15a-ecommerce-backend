@@ -5,7 +5,7 @@ const create = async (req, res) => {
   try {
     const exists = await Category.exists({ name });
     if (exists) {
-      throw new Error("Category alredy exists");
+      throw new Error("Category already exists");
     } else {
       await Category.create({ name });
       return res.status(200).json({ message: "Category successfuly created!" });
@@ -48,10 +48,10 @@ const update = async (req, res) => {
   }
 };
 
-const softDelete = async (req, res) => {
+const remove = async (req, res) => {
   const category = req.category;
   try {
-    if (req.type == "soft") {
+    if (req.body.type == "soft") {
       await Category.findByIdAndUpdate(category._id, {
         $set: { isDeleted: true },
       });
@@ -65,4 +65,4 @@ const softDelete = async (req, res) => {
   }
 };
 
-export default { create, list, categoryById, update, softDelete };
+export default { create, list, categoryById, update, remove };

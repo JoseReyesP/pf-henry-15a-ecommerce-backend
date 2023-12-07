@@ -51,13 +51,17 @@ const hasAuthorization = async (req, res, next) => {
   const authorized = req.profile && req.auth && req.profile._id == req.auth._id;
   if (!authorized) {
     // here we check if the user trying to modify the profile is an Admin
-    const adminProfile = await User.findById(req.auth._id);
-    const { role } = adminProfile;
-    if (role !== "admin") {
-      // if the modifier profile is not an admin then is not authorized
-      return res.status(403).json({
-        error: "User is not authorized",
-      });
+    try {
+      const adminProfile = await User.findById(req.auth._id);
+      const { role } = adminProfile;
+      if (role !== "admin") {
+        // if the modifier profile is not an admin then is not authorized
+        return res.status(403).json({
+          error: "User is not authorized",
+        });
+      }
+    } catch (err) {
+      return res.status(400).json({ message: "User not found" });
     }
   } else if (req.body.role && req.profile.role === "user") {
     return res.status(403).json({
