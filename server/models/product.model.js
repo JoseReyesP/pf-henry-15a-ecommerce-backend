@@ -26,6 +26,12 @@ const ProductSchema = new mongoose.Schema({
   stock: {
     type: Number,
   },
+  reviews: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "ProductReview",
+    },
+  ],
   isDeleted: {
     type: Boolean,
     default: false,
