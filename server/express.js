@@ -10,6 +10,7 @@ import userRoutes from "./routes/user.routes.js";
 import adminRoutes from "./routes/admin.routes.js";
 import productRoutes from "./routes/product.routes.js";
 import categoryRoutes from "./routes/category.routes.js";
+import paginateRoutes from "./routes/paginate.routes.js";
 
 const app = express();
 
@@ -30,6 +31,7 @@ app.use("/", userRoutes);
 app.use("/", adminRoutes);
 app.use("/", categoryRoutes);
 app.use("/", productRoutes);
+app.use("/", paginateRoutes);
 
 // Error handling
 app.use((err, req, res, next) => {
