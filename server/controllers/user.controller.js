@@ -65,8 +65,9 @@ const update = async (req, res) => {
 const remove = async (req, res) => {
   try {
     let user = req.profile;
+    console.log(req.profile, req.body);
     if (req.body.type == "soft") {
-      await user.findByIdAndUpdate(
+      await User.findByIdAndUpdate(
         user._id,
         { isDeleted: true },
         { new: true }
@@ -76,9 +77,7 @@ const remove = async (req, res) => {
         .json({ message: `User ${user._id} has been SoftDeleted!` });
     } else {
       await User.findByIdAndDelete(user._id);
-      res
-        .status(200)
-        .json({ message: `User ${user._id} has been Deleted!` });
+      res.status(200).json({ message: `User ${user._id} has been Deleted!` });
     }
   } catch (err) {
     return res.status(400).json({
