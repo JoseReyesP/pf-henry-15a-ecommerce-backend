@@ -73,12 +73,12 @@ const remove = async (req, res) => {
       );
       res
         .status(200)
-        .json({ message: `Product ${user._id} has been SoftDeleted!` });
+        .json({ message: `User ${user._id} has been SoftDeleted!` });
     } else {
       await User.findByIdAndDelete(user._id);
       res
         .status(200)
-        .json({ message: `Product ${user._id} has been Deleted!` });
+        .json({ message: `User ${user._id} has been Deleted!` });
     }
   } catch (err) {
     return res.status(400).json({
