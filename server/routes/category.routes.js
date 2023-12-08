@@ -11,6 +11,7 @@ router
 
 router
   .route("/api/category/:categoryId")
+  .get(authCtrl.requireSignin, categoryCtrl.read)
   .put(authCtrl.requireSignin, authCtrl.hasAuthorization, categoryCtrl.update)
   .delete(
     authCtrl.requireSignin,

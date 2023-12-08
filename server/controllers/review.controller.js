@@ -4,8 +4,8 @@ import Product from "../models/product.model.js";
 const create = async (req, res) => {
   // recommendation: to restrict a user of leaving bad reviews on a product under other user's id
   // enviromental variables are highly recommended.
-  const review = new Review(req.body);
   try {
+    const review = new Review(req.body);
     await review.save();
     // once we have created and saved the review, the next step is to relate it
     // to the product being rated
@@ -75,7 +75,6 @@ const update = async (req, res) => {
 const remove = async (req, res) => {
   try {
     let review = req.review;
-    console.log(req.body);
     if (req.body.type == "soft") {
       await Review.findByIdAndUpdate(
         review._id,

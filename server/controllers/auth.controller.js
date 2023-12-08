@@ -49,7 +49,6 @@ const requireSignin = expressjwt({
   algorithms: ["HS256"],
 });
 const hasAuthorization = async (req, res, next) => {
-  console.log(req.profile, req.auth, req.body.isDeleted);
   const authorized = req.profile && req.auth && req.profile._id == req.auth._id;
   if (!authorized) {
     // here we check if the user trying to modify the profile is an Admin

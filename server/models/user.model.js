@@ -23,6 +23,12 @@ const UserSchema = new mongoose.Schema({
     type: String,
     default: "user",
   },
+  purchaseHistory: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "PurchaseHistory",
+    },
+  ],
   isDeleted: {
     type: Boolean,
     default: false,
@@ -61,7 +67,6 @@ UserSchema.methods = {
         .update(password)
         .digest("hex");
     } catch (err) {
-      console.log("userSchema Methods: ", err);
       return "";
     }
   },
