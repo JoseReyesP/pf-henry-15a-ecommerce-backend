@@ -102,7 +102,9 @@ const filter = async (req, res, next) => {
             if (!filters[i].filter) return res.status(400).json({error: "specify the filter that you want"});
             productsfiltered = await filterProducts(filters[i], productsfiltered);
         }
-        res.status(200).json(productsfiltered);
+        //res.status(200).json(productsfiltered);
+        req.products = productsfiltered;
+        next();
     } catch (error) {
         return res.status(400).json({error: error.message});
     }
