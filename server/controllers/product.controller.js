@@ -67,7 +67,6 @@ const update = async (req, res) => {
 const remove = async (req, res) => {
   try {
     let product = req.product;
-    console.log(req.body);
     if (req.body.type == "soft") {
       await Product.findByIdAndUpdate(
         product._id,
