@@ -20,7 +20,7 @@ const filterProducts = async (filterObj, productsfiltered) => {
             //comes filtered previously 
             return products.filter( product => product.category.name == filterObj.type)
 
-        case "raiting":
+        case "rating":
             if (products.length == 0) { //first filter: get products from the db
                 products = await Product.find({ isDeleted: false})
                 .populate({
@@ -32,16 +32,29 @@ const filterProducts = async (filterObj, productsfiltered) => {
                     select: "user rating comment",
                     populate: { path: "user", select: "name lastname email" },
                 })
-
-                //average rating
             }
             //comes filtered previously 
-            const sortByRaiting = products.sort( (a,b) => {
-                return filter.order === 'asc' ? 1 : -1;
-                    
+            return products.sort((a,b) => {
+                let ratingA = a.averageRating;
+                let ratingB = b.averageRating;
+                if (!a.averageRating) {
+                    ratingA = 0;
+                }
+                if (!b.averageRating) {
+                    ratingB = 0;
+                }
+                if ( ratingA > ratingB) {
+                    //console.log(ratingA > ratingB, " mayor price: ", ratingA, ratingB);
+                    return filterObj.order === 'des' ? -1 : 1;
+                }
+                if (ratingA < ratingB) {
+                    //console.log(ratingA < ratingB, " menor price: ", ratingA, ratingB);
+                    return filterObj.order === 'asc' ? -1 : 1;
+                } 
+                //console.log(ratingA === ratingB, " price: ", ratingA, ratingB);
+                return 0;
             });
-            return;
-            break;
+
         case "price":
             if (products.length == 0) { //first filter: get products from the db
                 products = await Product.find({ isDeleted: false})
@@ -72,7 +85,7 @@ const filterProducts = async (filterObj, productsfiltered) => {
                 //console.log(price1 === price2, " price: ", price1, price2);
                 return 0;
             });
-            break;
+
         default:
             //return all products
             break;
