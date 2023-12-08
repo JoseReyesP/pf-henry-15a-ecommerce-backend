@@ -74,7 +74,6 @@ const update = async (req, res) => {
 const remove = async (req, res) => {
   try {
     let purchaseHistory = req.purchaseHistory;
-    console.log(purchaseHistory, req.body.type);
     if (req.body.type == "soft") {
       await PurchaseHistory.findByIdAndUpdate(
         purchaseHistory._id,

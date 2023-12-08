@@ -75,7 +75,6 @@ const update = async (req, res) => {
 const remove = async (req, res) => {
   try {
     let review = req.review;
-    console.log(req.body);
     if (req.body.type == "soft") {
       await Review.findByIdAndUpdate(
         review._id,

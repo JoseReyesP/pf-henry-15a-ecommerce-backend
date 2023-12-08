@@ -69,7 +69,6 @@ const update = async (req, res) => {
 const remove = async (req, res) => {
   try {
     let user = req.profile;
-    console.log(req.profile, req.body);
     if (req.body.type == "soft") {
       await User.findByIdAndUpdate(
         user._id,
