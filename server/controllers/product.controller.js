@@ -44,8 +44,17 @@ const productByID = async (req, res, next, id) => {
   }
 };
 
-const read = (req, res) => {
-  return res.json(req.product);
+const read = async (req, res) => {
+  try {
+    await req.product.populate({
+      path: "reviews",
+      select: "user rating comment",
+      populate: { path: "user", select: "name lastname email" },
+    });
+    return res.json(req.product);
+  } catch (error) {
+    return res.status(400).json({ error: error.message });
+  }
 };
 
 const update = async (req, res) => {
