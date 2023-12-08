@@ -1,18 +1,77 @@
-import Product from "../models/product.model";
+import Product from "../models/product.model.js";
 
-const filterProducts = async (filterObj, products) => {
+const filterProducts = async (filterObj, productsfiltered) => {
+    let products = productsfiltered;
+    //console.log("products", products);
     switch (filterObj.filter) {
         case "category":
-            if (products.length === 0) { //get products from the db
-                products = await Product.find({});
+            if (products.length == 0) { //first filter: get products from the db
+                products = await Product.find({ isDeleted: false})
+                .populate({
+                    path: "category",
+                    select: "name",
+                })
+                .populate({
+                    path: "reviews",
+                    select: "user rating comment",
+                    populate: { path: "user", select: "name lastname email" },
+                });
             }
-            
-            break;
+            //comes filtered previously 
+            return products.filter( product => product.category.name == filterObj.type)
+
         case "raiting":
-            
+            if (products.length == 0) { //first filter: get products from the db
+                products = await Product.find({ isDeleted: false})
+                .populate({
+                    path: "category",
+                    select: "name",
+                })
+                .populate({
+                    path: "reviews",
+                    select: "user rating comment",
+                    populate: { path: "user", select: "name lastname email" },
+                })
+
+                //average rating
+            }
+            //comes filtered previously 
+            const sortByRaiting = products.sort( (a,b) => {
+                return filter.order === 'asc' ? 1 : -1;
+                    
+            });
+            return;
             break;
         case "price":
-            
+            if (products.length == 0) { //first filter: get products from the db
+                products = await Product.find({ isDeleted: false})
+                .populate({
+                    path: "category",
+                    select: "name",
+                })
+                .populate({
+                    path: "reviews",
+                    select: "user rating comment",
+                    populate: { path: "user", select: "name lastname email" },
+                })
+                .sort({price: filterObj.order === 'asc' ? 1 : -1});
+                return products;
+            }
+            //comes filtered previously 
+            return products.sort((a,b) => {
+                // let price1 = parseFloat(a.price);
+                // let price2 = parseFloat(b.price);
+                if (a.price > b.price) {
+                    //console.log(price1 > price2, " mayoe price: ", price1, price2);
+                    return filterObj.order === 'des' ? -1 : 1;
+                }
+                else if (a.price < b.price) {
+                    //console.log(price1 < price2, " menor price: ", price1, price2);
+                    return filterObj.order === 'asc' ? -1 : 1;
+                }
+                //console.log(price1 === price2, " price: ", price1, price2);
+                return 0;
+            });
             break;
         default:
             //return all products
@@ -20,12 +79,20 @@ const filterProducts = async (filterObj, products) => {
     }
 };
 
-const filter = (req, res) => {
+const filter = async (req, res, next) => {
     const {filters} = req.body;
     if (!filters) return res.status(400).json({error: "filters is required"});
-    let productsfiltered = [];
-    for (let i = 0; i < filters.length; i++) {
-        if (!filter[i].filter) return res.status(400).json({error: "specify the filter that you want"});
-        filterProducts(filter[i], productsfiltered);
+    try {
+        let productsfiltered = [];
+        for (let i = 0; i < filters.length; i++) {
+            console.log(filters[i]);
+            if (!filters[i].filter) return res.status(400).json({error: "specify the filter that you want"});
+            productsfiltered = await filterProducts(filters[i], productsfiltered);
+        }
+        res.status(200).json(productsfiltered);
+    } catch (error) {
+        return res.status(400).json({error: error.message});
     }
 };
+
+export default { filter };
