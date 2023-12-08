@@ -34,6 +34,10 @@ const categoryById = async (req, res, next, id) => {
   }
 };
 
+const read = (req, res) => {
+  return res.json(req.category);
+};
+
 const update = async (req, res) => {
   const category = req.category;
   try {
@@ -65,4 +69,4 @@ const remove = async (req, res) => {
   }
 };
 
-export default { create, list, categoryById, update, remove };
+export default { create, list, categoryById, update, remove, read };
