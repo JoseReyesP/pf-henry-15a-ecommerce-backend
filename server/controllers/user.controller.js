@@ -12,9 +12,13 @@ const create = async (req, res) => {
 };
 const list = async (req, res) => {
   try {
-    let users = await User.find({ isDeleted: false }).select(
-      "name lastname email updated created"
-    );
+    let users = await User.find({ isDeleted: false })
+      .select("name lastname email updated purchaseHistory created")
+      .populate({
+        path: "purchaseHistory",
+        select: "product created",
+        populate: { path: "product", select: "title price" },
+      });
     res.json(users);
   } catch (err) {
     return res.status(400).json({ error: errorHandler.getErrorMessage(err) });
