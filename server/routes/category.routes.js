@@ -15,7 +15,7 @@ router
   .delete(
     authCtrl.requireSignin,
     authCtrl.hasAuthorization,
-    categoryCtrl.softDelete
+    categoryCtrl.remove
   );
 
 router.param("categoryId", categoryCtrl.categoryById);
