@@ -25,6 +25,7 @@ const signin = async (req, res) => {
       user: {
         _id: user._id,
         name: user.name,
+        lastname: user.lastname,
         email: user.email,
       },
     });
@@ -63,7 +64,12 @@ const hasAuthorization = async (req, res, next) => {
     } catch (err) {
       return res.status(400).json({ message: "User not found" });
     }
-  } else if (req.body.role && req.profile.role === "user") {
+  } else if (
+    // this conditional is intended to increase the level of security
+    // making sure that a simple user can't change its own role or isDeleted
+    (req.body.role || "isDeleted" in req.body) &&
+    req.profile.role === "user"
+  ) {
     return res.status(403).json({
       error: "Nice try champ, but you are not an Admin",
     });
