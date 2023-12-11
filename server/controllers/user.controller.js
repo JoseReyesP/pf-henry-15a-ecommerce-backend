@@ -12,9 +12,13 @@ const create = async (req, res) => {
 };
 const list = async (req, res) => {
   try {
-    let users = await User.find({ isDeleted: false }).select(
-      "name lastname email updated created"
-    );
+    let users = await User.find({ isDeleted: false })
+      .select("name lastname email updated purchaseHistory created")
+      .populate({
+        path: "purchaseHistory",
+        select: "product created",
+        populate: { path: "product", select: "title price" },
+      });
     res.json(users);
   } catch (err) {
     return res.status(400).json({ error: errorHandler.getErrorMessage(err) });
@@ -65,7 +69,6 @@ const update = async (req, res) => {
 const remove = async (req, res) => {
   try {
     let user = req.profile;
-    console.log(req.profile, req.body);
     if (req.body.type == "soft") {
       await User.findByIdAndUpdate(
         user._id,

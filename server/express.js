@@ -4,12 +4,17 @@ import cookieParser from "cookie-parser";
 import compress from "compression";
 import cors from "cors";
 import helmet from "helmet";
-import Template from "../template.js";
+import Template from "../template.js"; // this will be use to provide an AdminDashboard
 import authRoutes from "./routes/auth.routes.js";
 import userRoutes from "./routes/user.routes.js";
 import adminRoutes from "./routes/admin.routes.js";
 import productRoutes from "./routes/product.routes.js";
 import categoryRoutes from "./routes/category.routes.js";
+import paginateRoutes from "./routes/paginate.routes.js";
+import reviewRoutes from "./routes/review.routes.js";
+import searchRoutes from "./routes/search.routes.js";
+import purchaseHistoryRoutes from "./routes/search.routes.js";
+import filterRoutes from "./routes/filters.routes.js"
 
 const app = express();
 
@@ -30,6 +35,11 @@ app.use("/", userRoutes);
 app.use("/", adminRoutes);
 app.use("/", categoryRoutes);
 app.use("/", productRoutes);
+app.use("/", paginateRoutes);
+app.use("/", reviewRoutes);
+app.use("/", searchRoutes);
+app.use("/", purchaseHistoryRoutes);
+app.use("/", filterRoutes);
 
 // Error handling
 app.use((err, req, res, next) => {

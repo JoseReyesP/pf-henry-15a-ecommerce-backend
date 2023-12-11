@@ -13,8 +13,15 @@ const create = async (req, res) => {
 const list = async (req, res) => {
   try {
     let products = await Product.find({ isDeleted: false })
-      .select("title price description category updated created")
-      .populate({ path: "category", select: "name" });
+      .populate({
+        path: "category",
+        select: "name",
+      })
+      .populate({
+        path: "reviews",
+        select: "user rating comment",
+        populate: { path: "user", select: "name lastname email" },
+      });
     res.json(products);
   } catch (err) {
     return res.status(400).json({ error: err.message });
@@ -29,7 +36,6 @@ const productByID = async (req, res, next, id) => {
       });
     }
     req.product = product;
-    console.log("productByID : ", req.product, req.type, req.body);
     next();
   } catch (error) {
     return res.status(400).json({
@@ -38,8 +44,17 @@ const productByID = async (req, res, next, id) => {
   }
 };
 
-const read = (req, res) => {
-  return res.json(req.product);
+const read = async (req, res) => {
+  try {
+    await req.product.populate({
+      path: "reviews",
+      select: "user rating comment",
+      populate: { path: "user", select: "name lastname email" },
+    });
+    return res.json(req.product);
+  } catch (error) {
+    return res.status(400).json({ error: error.message });
+  }
 };
 
 const update = async (req, res) => {
@@ -61,7 +76,6 @@ const update = async (req, res) => {
 const remove = async (req, res) => {
   try {
     let product = req.product;
-    console.log(req.body);
     if (req.body.type == "soft") {
       await Product.findByIdAndUpdate(
         product._id,
