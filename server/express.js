@@ -1,4 +1,7 @@
 import express from "express";
+import { fileURLToPath } from "url";
+import { dirname } from "path";
+import path from "path";
 import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 import compress from "compression";
@@ -14,9 +17,13 @@ import paginateRoutes from "./routes/paginate.routes.js";
 import reviewRoutes from "./routes/review.routes.js";
 import searchRoutes from "./routes/search.routes.js";
 import purchaseHistoryRoutes from "./routes/search.routes.js";
-import filterRoutes from "./routes/filters.routes.js"
+import filterRoutes from "./routes/filters.routes.js";
 
 const app = express();
+
+//project's URL
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 //middleware
 app.use(bodyParser.json());
@@ -27,8 +34,10 @@ app.use(cors());
 app.use(helmet());
 
 // Routes
+app.use(express.static(path.join(__dirname, "admin-dashboard/build")));
 app.get("/", (req, res) => {
-  res.status(200).send(Template());
+  //res.status(200).send(Template());
+  res.sendFile(path.join(__dirname, "admin-dashboard/build", "index.html"));
 });
 app.use("/", authRoutes);
 app.use("/", userRoutes);
