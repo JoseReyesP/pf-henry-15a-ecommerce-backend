@@ -30,7 +30,14 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(compress());
-app.use(cors({ credentials: true, origin: "*" }));
+const corsOptions = {
+  origin: "*",
+  credentials: true,
+  methods: "GET,PUT,POST,DELETE,PATCH,OPTIONS",
+  allowedHeaders:
+    "Origin,X-Requested-With,Content-Type,Accept,content-type,application/json",
+};
+app.use(cors(corsOptions));
 app.use(helmet());
 
 // Routes
