@@ -29,7 +29,11 @@ const list = async (req, res) => {
 };
 const productByID = async (req, res, next, id) => {
   try {
-    let product = await Product.findById(id);
+    let product = await Product.findById(id)
+    .populate({
+        path: "category",
+        select: "name",
+    });
     if (!product) {
       return res.status(400).json({
         error: "Product not found",
