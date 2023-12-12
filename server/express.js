@@ -31,7 +31,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(compress());
 const corsOptions = {
-  origin: ["admindashboard.up.railway.app", "http://localhost:3000"],
+  origin: ["https://admindashboard.up.railway.app", "http://localhost:3000"],
   credentials: true,
   methods: "GET,PUT,POST,DELETE,PATCH,OPTIONS",
   allowedHeaders: [
@@ -40,7 +40,6 @@ const corsOptions = {
     "Content-Type",
     "Accept",
     "Authorization",
-    "application/json",
   ],
 };
 app.use(cors(corsOptions));
