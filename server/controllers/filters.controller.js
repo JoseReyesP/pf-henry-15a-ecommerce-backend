@@ -88,17 +88,26 @@ const filterProducts = async (filterObj, productsfiltered) => {
 
         default:
             //return all products
-            break;
+            return await Product.find({ isDeleted: false})
+            .populate({
+                path: "category",
+                select: "name",
+            })
+            .populate({
+                path: "reviews",
+                select: "user rating comment",
+                populate: { path: "user", select: "name lastname email" },
+            });
     }
 };
 
 const filter = async (req, res, next) => {
     const {filters} = req.body;
-    if (!filters) return res.status(400).json({error: "filters is required"});
+    if (!filters) return next(); //it doesn't filters applied then go to paginate
     try {
         let productsfiltered = [];
         for (let i = 0; i < filters.length; i++) {
-            console.log(filters[i]);
+            //console.log(filters[i]);
             if (!filters[i].filter) return res.status(400).json({error: "specify the filter that you want"});
             productsfiltered = await filterProducts(filters[i], productsfiltered);
         }
