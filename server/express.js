@@ -30,7 +30,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(compress());
-app.use(cors());
+app.use(cors({ credentials: true, origin: "*" }));
 app.use(helmet());
 
 // Routes
