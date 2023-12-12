@@ -34,8 +34,14 @@ const corsOptions = {
   origin: ["admindashboard.up.railway.app", "http://localhost:3000"],
   credentials: true,
   methods: "GET,PUT,POST,DELETE,PATCH,OPTIONS",
-  allowedHeaders:
-    "Origin,X-Requested-With,Content-Type,Accept,content-type,application/json",
+  allowedHeaders: [
+    "Origin",
+    "X-Requested-With",
+    "Content-Type",
+    "Accept",
+    "Authorization",
+    "application/json",
+  ],
 };
 app.use(cors(corsOptions));
 app.use(helmet());
