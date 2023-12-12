@@ -1,6 +1,7 @@
 import express from "express";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
+import multer from "multer";
 import path from "path";
 import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
@@ -40,9 +41,11 @@ const corsOptions = {
     "Content-Type",
     "Accept",
     "Authorization",
+    "Cache-Control",
   ],
 };
 app.use(cors(corsOptions));
+app.options("*", cors(corsOptions));
 app.use(helmet());
 
 // Routes

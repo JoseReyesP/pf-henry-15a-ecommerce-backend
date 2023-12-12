@@ -2,12 +2,23 @@ import Product from "../models/product.model.js";
 import errorHandler from "../helpers/dbErrorHandlers.js";
 
 const create = async (req, res) => {
-  const user = new Product(req.body);
+  const product = new Product({
+    title: req.body.title,
+    price: req.body.price,
+    description: req.body.description,
+    image: req.body.image,
+    photo: {
+      data: req.file.buffer,
+      contentType: req.file.mimetype,
+    },
+    category: req.body.category,
+    stock: req.body.stock,
+  });
   try {
-    await user.save();
+    await product.save();
     return res.status(200).json({ message: "Product successfuly created!" });
   } catch (err) {
-    return res.status(400).json({ error: errorHandler.getErrorMessage(err) });
+    return res.status(500).send({ error: "Internal Server Error" });
   }
 };
 const list = async (req, res) => {

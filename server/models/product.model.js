@@ -22,6 +22,10 @@ const ProductSchema = new mongoose.Schema(
       type: String,
       required: "Image is required",
     },
+    photo: {
+      data: Buffer,
+      contentType: String,
+    },
     category: {
       type: Schema.Types.ObjectId,
       ref: "Category",
