@@ -9,9 +9,9 @@ const search = async (req, res, next) => {
       path: "category",
       select: "name",
   });
-    //return res.status(200).json(products);
-    req.products = products;
-    next();
+    return res.status(200).json(products);
+    //req.products = products;
+    //next();
   } catch (error) {
     return res.status(400).json({ message: error.message });
   }
