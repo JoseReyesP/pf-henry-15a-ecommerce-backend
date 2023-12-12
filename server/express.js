@@ -37,7 +37,8 @@ app.use(helmet());
 app.use(express.static(path.join(__dirname, "admin-dashboard/build")));
 app.get("/", (req, res) => {
   //res.status(200).send(Template());
-  res.sendFile(path.join(__dirname, "admin-dashboard/build", "index.html"));
+  //res.sendFile(path.join(__dirname, "admin-dashboard/build", "index.html"));
+  res.redirect("admindashboard.up.railway.app");
 });
 app.use("/", authRoutes);
 app.use("/", userRoutes);
