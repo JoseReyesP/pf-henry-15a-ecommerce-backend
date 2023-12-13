@@ -2,7 +2,7 @@ import Product from "../models/product.model.js";
 
 const filterProducts = async (filterObj, productsfiltered) => {
   let products = productsfiltered;
-  console.log("products", products);
+  //console.log("products", products);
   switch (filterObj.filter) {
     case "category":
       if (products.length == 0) {
@@ -107,7 +107,7 @@ const filterProducts = async (filterObj, productsfiltered) => {
 
 const filter = async (req, res, next) => {
   const { filters } = req.body;
-  console.log("los filtros: ", filters);
+  //console.log("los filtros: ", filters);
   if (!filters) return next(); //it doesn't filters applied then go to paginate
   try {
     let productsfiltered = [];
