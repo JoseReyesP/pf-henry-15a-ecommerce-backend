@@ -1,5 +1,6 @@
 import Review from "../models/review.model.js";
 import Product from "../models/product.model.js";
+import User from "../models/user.model.js";
 
 const create = async (req, res) => {
   // recommendation: to restrict a user of leaving bad reviews on a product under other user's id
@@ -24,12 +25,12 @@ const list = async (req, res) => {
       .populate({
         path: "user",
         select: "name lastname email",
-      })
-      .populate({
-        path: "product",
-        select: "title price category",
-        populate: { path: "category", select: "name" },
       });
+    // .populate({
+    //   path: "product",
+    //   select: "title price category",
+    //   //populate: { path: "category", select: "name" },
+    // });
     res.status(200).json(reviews);
   } catch (err) {
     return res.status(400).json({ error: err.message });

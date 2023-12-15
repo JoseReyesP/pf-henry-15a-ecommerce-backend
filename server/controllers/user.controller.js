@@ -1,5 +1,6 @@
 import User from "../models/user.model.js";
 import errorHandler from "../helpers/dbErrorHandlers.js";
+import PurchaseHistory from "../models/purchaseHistory.model.js";
 
 const create = async (req, res) => {
   const user = new User(req.body);
@@ -21,7 +22,7 @@ const list = async (req, res) => {
       });
     res.json(users);
   } catch (err) {
-    return res.status(400).json({ error: errorHandler.getErrorMessage(err) });
+    return res.status(400).json({ error: err.message });
   }
 };
 const userByID = async (req, res, next, id) => {

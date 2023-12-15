@@ -1,4 +1,8 @@
 import express from "express";
+import { fileURLToPath } from "url";
+import { dirname } from "path";
+import multer from "multer";
+import path from "path";
 import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 import compress from "compression";
@@ -14,21 +18,42 @@ import paginateRoutes from "./routes/paginate.routes.js";
 import reviewRoutes from "./routes/review.routes.js";
 import searchRoutes from "./routes/search.routes.js";
 import purchaseHistoryRoutes from "./routes/search.routes.js";
-import filterRoutes from "./routes/filters.routes.js"
+import filterRoutes from "./routes/filters.routes.js";
 
 const app = express();
+
+//project's URL
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 //middleware
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(compress());
-app.use(cors());
+const corsOptions = {
+  origin: ["https://admindashboard.up.railway.app", "http://localhost:3000"],
+  credentials: true,
+  methods: "GET,PUT,POST,DELETE,PATCH,OPTIONS",
+  allowedHeaders: [
+    "Origin",
+    "X-Requested-With",
+    "Content-Type",
+    "Accept",
+    "Authorization",
+    "Cache-Control",
+  ],
+};
+app.use(cors(corsOptions));
+app.options("*", cors(corsOptions));
 app.use(helmet());
 
 // Routes
+app.use(express.static(path.join(__dirname, "admin-dashboard/build")));
 app.get("/", (req, res) => {
-  res.status(200).send(Template());
+  //res.status(200).send(Template());
+  //res.sendFile(path.join(__dirname, "admin-dashboard/build", "index.html"));
+  res.redirect("admindashboard.up.railway.app");
 });
 app.use("/", authRoutes);
 app.use("/", userRoutes);
