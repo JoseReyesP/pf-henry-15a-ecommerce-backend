@@ -40,10 +40,9 @@ const list = async (req, res) => {
 };
 const productByID = async (req, res, next, id) => {
   try {
-    let product = await Product.findById(id)
-    .populate({
-        path: "category",
-        select: "name",
+    let product = await Product.findById(id).populate({
+      path: "category",
+      select: "name",
     });
     if (!product) {
       return res.status(400).json({
@@ -113,4 +112,14 @@ const remove = async (req, res) => {
   }
 };
 
-export default { create, productByID, read, list, remove, update };
+const photo = (req, res, next) => {
+  if (req.product.photo.data) {
+    res.set("Content-Type", req.product.photo.contentType);
+    res.setHeader("Content-Security-Policy", "img-src 'self' data:;");
+    res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
+    return res.send(req.product.photo.data);
+  }
+  next();
+};
+
+export default { create, productByID, read, list, remove, update, photo };

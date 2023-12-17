@@ -22,17 +22,15 @@ import filterRoutes from "./routes/filters.routes.js";
 
 const app = express();
 
-//project's URL
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
-//middleware
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(cookieParser());
-app.use(compress());
 const corsOptions = {
-  origin: ["https://admindashboard.up.railway.app", "http://localhost:3000", "https://admindashboard.up.railway.app/api/product", "http://localhost:3001/api/product"],
+
+  origin: [
+    "http://localhost:3001",
+    "http://localhost:3000",
+    "https://pf-henry-15a-ecommerce-frontend.vercel.app/",
+    "https://admindashboard.up.railway.app",
+  ],
+
   credentials: true,
   methods: "GET,PUT,POST,DELETE,PATCH,OPTIONS",
   allowedHeaders: [
@@ -46,6 +44,17 @@ const corsOptions = {
 };
 app.use(cors(corsOptions));
 app.options("*", cors(corsOptions));
+
+//project's URL
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+//middleware
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cookieParser());
+app.use(compress());
+
 app.use(helmet());
 
 // Routes
