@@ -23,11 +23,14 @@ import filterRoutes from "./routes/filters.routes.js";
 const app = express();
 
 const corsOptions = {
+
   origin: [
     "http://localhost:3001",
     "http://localhost:3000",
     "https://pf-henry-15a-ecommerce-frontend.vercel.app/",
+    "https://admindashboard.up.railway.app",
   ],
+
   credentials: true,
   methods: "GET,PUT,POST,DELETE,PATCH,OPTIONS",
   allowedHeaders: [
