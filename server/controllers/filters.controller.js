@@ -111,16 +111,19 @@ const filter = async (req, res, next) => {
   if (!price && !category && !rating) return next(); //it doesn't filters applied then go to paginate
   try {
     let productsfiltered = [];
-    if (price){
-      if(!price === 'asc' || !price === 'des' || !price === 'range') throw new Error('option of filter by price is not valid');
-      if (price === 'range') {
+    if (price) {
+      if (!price === "asc" || !price === "des" || !price === "range")
+        throw new Error("option of filter by price is not valid");
+      if (price === "range") {
         if (productsfiltered.length == 0) {
-          productsfiltered = await Product.find( { price: { $gte: Number(minprice), $lte: Number(maxprice) }} );
+          productsfiltered = await Product.find({
+            price: { $gte: Number(minprice), $lte: Number(maxprice) },
+          });
           //console.log("Products", products);
-        }
-        else{
-          productsfiltered = productsfiltered.filter(product => {
-            product.price >= Number(minprice) || product.price <= Number(maxprice)
+        } else {
+          productsfiltered = productsfiltered.filter((product) => {
+            product.price >= Number(minprice) ||
+              product.price <= Number(maxprice);
           });
         }
       }
@@ -137,11 +140,10 @@ const filter = async (req, res, next) => {
             populate: { path: "user", select: "name lastname email" },
           })
           .sort({ price: price === "asc" ? 1 : -1 });
-          //console.log("BD", productsfiltered);
-      }
-      else{
+        //console.log("BD", productsfiltered);
+      } else {
         //comes filtered previously
-          productsfiltered = productsfiltered.sort((a, b) => {
+        productsfiltered = productsfiltered.sort((a, b) => {
           // let price1 = parseFloat(a.price);
           // let price2 = parseFloat(b.price);
           if (a.price > b.price) {
@@ -157,7 +159,8 @@ const filter = async (req, res, next) => {
       }
     }
     if (rating) {
-      if(!rating === 'asc' || !rating === 'des') throw new Error('option of filter by rating is not valid');
+      if (!rating === "asc" || !rating === "des")
+        throw new Error("option of filter by rating is not valid");
       if (productsfiltered.length == 0) {
         //first filter: get products from the db
         productsfiltered = await Product.find({ isDeleted: false })
@@ -210,6 +213,8 @@ const filter = async (req, res, next) => {
       );
     }
     //console.log("data", productsfiltered);
+    res.setHeader("Content-Security-Policy", "img-src 'self' data:;");
+    res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
     req.products = productsfiltered;
     next();
   } catch (error) {

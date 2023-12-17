@@ -33,6 +33,8 @@ const list = async (req, res) => {
         select: "user rating comment",
         populate: { path: "user", select: "name lastname email" },
       });
+    res.setHeader("Content-Security-Policy", "img-src 'self' data:;");
+    res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
     res.json(products);
   } catch (err) {
     return res.status(400).json({ error: err.message });
