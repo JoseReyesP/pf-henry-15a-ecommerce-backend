@@ -40,6 +40,7 @@ const corsOptions = {
     "Authorization",
     "Cache-Control",
   ],
+  optionSuccessStatus: 204,
 };
 app.use(cors(corsOptions));
 app.options("*", cors(corsOptions));
