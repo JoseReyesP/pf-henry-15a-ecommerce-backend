@@ -23,11 +23,10 @@ import filterRoutes from "./routes/filters.routes.js";
 const app = express();
 
 const corsOptions = {
-
   origin: [
     "http://localhost:3001",
     "http://localhost:3000",
-    "https://pf-henry-15a-ecommerce-frontend.vercel.app/",
+    "https://pf-henry-15a-ecommerce-frontend.vercel.app",
     "https://admindashboard.up.railway.app",
   ],
 
@@ -58,12 +57,10 @@ app.use(compress());
 app.use(helmet());
 
 // Routes
-app.use(express.static(path.join(__dirname, "admin-dashboard/build")));
 app.get("/", (req, res) => {
-  //res.status(200).send(Template());
-  //res.sendFile(path.join(__dirname, "admin-dashboard/build", "index.html"));
-  res.redirect("admindashboard.up.railway.app");
+  res.redirect("https://admindashboard.up.railway.app");
 });
+
 app.use("/", authRoutes);
 app.use("/", userRoutes);
 app.use("/", adminRoutes);
