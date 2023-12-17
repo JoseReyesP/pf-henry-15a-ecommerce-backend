@@ -106,6 +106,12 @@ const filterProducts = async (filterObj, productsfiltered) => {
 };
 
 const filter = async (req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept"
+  );
+
   const { price, category, rating, minprice, maxprice } = req.query;
   //console.log(price, rating, category);
   if (!price && !category && !rating) return next(); //it doesn't filters applied then go to paginate
@@ -213,8 +219,6 @@ const filter = async (req, res, next) => {
       );
     }
     //console.log("data", productsfiltered);
-    res.setHeader("Content-Security-Policy", "img-src 'self' data:;");
-    res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
     req.products = productsfiltered;
     next();
   } catch (error) {
