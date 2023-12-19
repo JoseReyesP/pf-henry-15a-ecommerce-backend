@@ -44,9 +44,10 @@ const photoById = async (req, res, next, id) => {
 };
 
 const read = (req, res) => {
+  res.set("Content-Type", req.photo.photoData.contentType);
   res.setHeader("Content-Security-Policy", "img-src 'self' data:;");
   res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
-  return res.json(req.photo.photoData.data);
+  return res.send(req.photo.photoData.data);
 };
 
 const update = async (req, res) => {
