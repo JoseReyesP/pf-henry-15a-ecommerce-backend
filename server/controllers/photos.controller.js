@@ -2,6 +2,7 @@ import Photos from "../models/photos.model.js";
 
 const create = async (req, res) => {
   const { name } = req.body;
+  console.log("create called");
   try {
     const exists = await Photos.exists({ name });
     if (!req.body.photoData) {
@@ -11,6 +12,9 @@ const create = async (req, res) => {
       throw new Error("Photo already exists");
     } else {
       await Photos.create(req.body);
+      console.log(req.body.name, "was created");
+      res.setHeader("Content-Security-Policy", "img-src 'self' data:;");
+      res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
       return res.status(200).json({ message: "Photo successfuly saved!" });
     }
   } catch (error) {
@@ -21,6 +25,8 @@ const create = async (req, res) => {
 const list = async (req, res) => {
   try {
     const photos = await Photos.find({ isDeleted: false }).select("_id");
+    res.setHeader("Content-Security-Policy", "img-src 'self' data:;");
+    res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
     res.status(200).json(photos);
   } catch (error) {
     return res.status(400).json({ error: error.message });
@@ -38,6 +44,8 @@ const photoById = async (req, res, next, id) => {
 };
 
 const read = (req, res) => {
+  res.setHeader("Content-Security-Policy", "img-src 'self' data:;");
+  res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
   return res.json(req.photo.photoData.data);
 };
 
@@ -45,6 +53,8 @@ const update = async (req, res) => {
   const photo = req.photo;
   try {
     await Photos.findByIdAndUpdate(photo._id, { $set: req.body });
+    res.setHeader("Content-Security-Policy", "img-src 'self' data:;");
+    res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
     res.status(200).json({ message: "Photo updated!" });
   } catch (error) {
     return res.status(400).json({ error: error.message });
