@@ -19,6 +19,7 @@ import reviewRoutes from "./routes/review.routes.js";
 import searchRoutes from "./routes/search.routes.js";
 import purchaseHistoryRoutes from "./routes/search.routes.js";
 import filterRoutes from "./routes/filters.routes.js";
+import photosRoutes from "./routes/photos.routes.js";
 
 const app = express();
 
@@ -72,6 +73,7 @@ app.use("/", reviewRoutes);
 app.use("/", searchRoutes);
 app.use("/", purchaseHistoryRoutes);
 app.use("/", filterRoutes);
+app.use("/", photosRoutes);
 
 // Error handling
 app.use((err, req, res, next) => {
