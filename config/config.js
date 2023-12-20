@@ -7,6 +7,7 @@ const config = {
   port: process.env.PORT || 3001,
   jwtSecret: process.env.JWT_SECRET || "YOUR_secret_key",
   mongoUri: DBUrl,
+  henrucciEmail: "henrucciwebsite@gmail.com",
 };
 
 // this is mongodb Atlas connection

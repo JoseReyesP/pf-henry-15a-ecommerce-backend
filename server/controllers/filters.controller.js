@@ -1,6 +1,12 @@
 import Product from "../models/product.model.js";
 
 const filter = async (req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept"
+  );
+
   const { price, category, rating, minprice, maxprice } = req.query;
   //console.log(price, rating, category);
   if (!price && !category && !rating) return next(); //it doesn't filters applied then go to paginate
@@ -50,9 +56,8 @@ const filter = async (req, res, next) => {
             populate: { path: "user", select: "name lastname email" },
           })
           .sort({ price: price === "asc" ? 1 : -1 });
-          //console.log("BD", productsfiltered);
-      }
-      else{
+        //console.log("BD", productsfiltered);
+      } else {
         //comes filtered previously
           productsfiltered = productsfiltered.sort((a, b) => {
           if (a.price > b.price) {
@@ -65,7 +70,8 @@ const filter = async (req, res, next) => {
       }
     }
     if (rating) {
-      if(!rating === 'asc' || !rating === 'des') throw new Error('option of filter by rating is not valid');
+      if (!rating === "asc" || !rating === "des")
+        throw new Error("option of filter by rating is not valid");
       if (productsfiltered.length == 0) {
         //first filter: get products from the db
         productsfiltered = await Product.find({ isDeleted: false })
