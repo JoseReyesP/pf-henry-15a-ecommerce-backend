@@ -2,9 +2,10 @@ import User from "../models/user.model.js";
 import errorHandler from "../helpers/dbErrorHandlers.js";
 import PurchaseHistory from "../models/purchaseHistory.model.js";
 import sgMail from "@sendgrid/mail";
-import config from "../../config/config.js";
+import dotenv from "dotenv";
 
-sgMail.setApiKey(config.apiSendGrid);
+dotenv.config();
+sgMail.setApiKey(process.env.sgAPIKey);
 
 const sendNotification = async (user) => {
   const correo = {
