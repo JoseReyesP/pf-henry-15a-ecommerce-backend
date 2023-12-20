@@ -1,8 +1,8 @@
 import User from "../models/user.model.js";
-import errorHandler from "../helpers/dbErrorHandlers.js";
 import PurchaseHistory from "../models/purchaseHistory.model.js";
 import sgMail from "@sendgrid/mail";
 import dotenv from "dotenv";
+import config from "../../config/config.js";
 
 dotenv.config();
 sgMail.setApiKey(process.env.sgAPIKey);
@@ -35,11 +35,9 @@ const create = async (req, res) => {
 const list = async (req, res) => {
   try {
     let users = await User.find({ isDeleted: false })
-      .select("name lastname email updated purchaseHistory created")
+      .select("name lastname email updated shoppingCart created")
       .populate({
-        path: "purchaseHistory",
-        select: "product created",
-        populate: { path: "product", select: "title price" },
+        path: "shoppingCart",
       });
     res.json(users);
   } catch (err) {
@@ -74,6 +72,7 @@ const read = (req, res) => {
   req.profile.salt = undefined;
   return res.json(req.profile);
 };
+
 const update = async (req, res) => {
   try {
     let user = req.profile;
@@ -111,4 +110,31 @@ const remove = async (req, res) => {
   }
 };
 
-export default { create, userByID, read, list, remove, update };
+const addToShoppingCart = async (req, res) => {
+  const { product } = req.query;
+  try {
+    await User.findByIdAndUpdate(
+      req.profile._id,
+      { $set: { shoppingCart: [...req.profile.shoppingCart, product] } },
+      { new: true }
+    );
+    return res
+      .status(200)
+      .json({ message: "product has being added to the shopping cart" });
+  } catch (error) {
+    return res.status(500).json({
+      message: "internal server error: product not added to shopping cart",
+    });
+    console.log(error);
+  }
+};
+
+export default {
+  create,
+  userByID,
+  read,
+  list,
+  remove,
+  update,
+  addToShoppingCart,
+};

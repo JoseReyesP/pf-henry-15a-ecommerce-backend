@@ -1,5 +1,4 @@
 import Product from "../models/product.model.js";
-import errorHandler from "../helpers/dbErrorHandlers.js";
 
 const create = async (req, res) => {
   const product = new Product({
