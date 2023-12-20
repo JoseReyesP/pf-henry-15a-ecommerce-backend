@@ -1,16 +1,36 @@
 import User from "../models/user.model.js";
 import errorHandler from "../helpers/dbErrorHandlers.js";
 import PurchaseHistory from "../models/purchaseHistory.model.js";
+import sgMail from "@sendgrid/mail";
+import config from "../../config/config.js";
+
+sgMail.setApiKey(config.apiSendGrid);
+
+const sendNotification = async (user) => {
+  const correo = {
+    to: user.email,
+    from: config.henrucciEmail,
+    templateId: "d-c22f2e10e108452284a7216023858f7d",
+    dynamic_template_data: {
+      subject: "Confirmacion de Registro",
+      name: user.name,
+    },
+  };
+  await sgMail.send(correo);
+};
 
 const create = async (req, res) => {
   const user = new User(req.body);
   try {
-    await user.save();
+    await user.save().then(() => {
+      sendNotification(user);
+    });
     return res.status(200).json({ message: "Successfully signed up!" });
   } catch (err) {
-    return res.status(400).json({ error: errorHandler.getErrorMessage(err) });
+    return res.status(400).json({ error: err });
   }
 };
+
 const list = async (req, res) => {
   try {
     let users = await User.find({ isDeleted: false })
