@@ -29,7 +29,7 @@ router.use(cors(corsOptions));
 router
   .route("/api/photos")
   .get(photosCtrl.list)
-  .post(upload.single("photo"), photosCtrl.create);
+  .post(upload.single("photoData"), photosCtrl.create);
 
 router
   .route("/api/photos/:photoId")

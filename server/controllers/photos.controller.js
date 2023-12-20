@@ -1,24 +1,24 @@
 import Photos from "../models/photos.model.js";
 
 const create = async (req, res) => {
-  const { name } = req.body;
-  console.log("create called");
+  console.log(req.file);
+  const photo = new Photos({
+    name: req.file.originalname,
+    photoData: {
+      data: req.file.buffer,
+      contentType: req.file.mimetype,
+    },
+  });
   try {
-    const exists = await Photos.exists({ name });
-    if (!req.body.photoData) {
-      throw new Error("not valid photo data provided");
-    }
-    if (exists) {
-      throw new Error("Photo already exists");
-    } else {
-      await Photos.create(req.body);
-      console.log(req.body.name, "was created");
-      res.setHeader("Content-Security-Policy", "img-src 'self' data:;");
-      res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
-      return res.status(200).json({ message: "Photo successfuly saved!" });
-    }
-  } catch (error) {
-    return res.status(400).json({ error: error.message });
+    await photo.save();
+    res.set("Content-Type", req.file.mimetype);
+    res.setHeader("Content-Security-Policy", "img-src 'self' data:;");
+    res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
+    return res
+      .status(200)
+      .json({ message: "Photo successfuly created!", id: photo._id });
+  } catch (err) {
+    return res.status(500).send({ error: err });
   }
 };
 
@@ -44,9 +44,10 @@ const photoById = async (req, res, next, id) => {
 };
 
 const read = (req, res) => {
+  res.set("Content-Type", req.photo.photoData.contentType);
   res.setHeader("Content-Security-Policy", "img-src 'self' data:;");
   res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
-  return res.json(req.photo.photoData.data);
+  return res.send(req.photo.photoData.data);
 };
 
 const update = async (req, res) => {
