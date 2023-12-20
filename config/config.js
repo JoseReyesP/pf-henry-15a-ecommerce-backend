@@ -7,9 +7,6 @@ const config = {
   port: process.env.PORT || 3001,
   jwtSecret: process.env.JWT_SECRET || "YOUR_secret_key",
   mongoUri: DBUrl,
-  apiSendGrid:
-    process.env.apiSendGrid ||
-    "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",
   henrucciEmail: "henrucciwebsite@gmail.com",
 };
 
