@@ -29,6 +29,12 @@ const UserSchema = new mongoose.Schema({
       ref: "PurchaseHistory",
     },
   ],
+  shoppingCart: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Product",
+    },
+  ],
   isDeleted: {
     type: Boolean,
     default: false,
