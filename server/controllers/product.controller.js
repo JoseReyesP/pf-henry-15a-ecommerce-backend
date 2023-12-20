@@ -1,5 +1,4 @@
 import Product from "../models/product.model.js";
-import errorHandler from "../helpers/dbErrorHandlers.js";
 
 const create = async (req, res) => {
   const product = new Product({
@@ -7,10 +6,6 @@ const create = async (req, res) => {
     price: req.body.price,
     description: req.body.description,
     image: req.body.image,
-    photo: {
-      data: req.file.buffer,
-      contentType: req.file.mimetype,
-    },
     category: req.body.category,
     stock: req.body.stock,
   });
