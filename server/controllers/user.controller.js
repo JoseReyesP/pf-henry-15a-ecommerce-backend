@@ -4,9 +4,8 @@ import sgMail from "@sendgrid/mail";
 import dotenv from "dotenv";
 import config from "../../config/config.js";
 
-dotenv.config();
 sgMail.setApiKey(config.sgAPIKey);
-
+console.log("key: ", config.sgAPIKey);
 const sendNotification = async (user) => {
   const correo = {
     to: user.email,
