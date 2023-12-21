@@ -15,8 +15,9 @@ const config = {
 //   env: process.env.NODE_ENV,
 //   port: process.env.PORT,
 //   jwtSecret: process.env.JWT_SECRET,
-//   mongoUri:process.env.mongoUri
-//    ,
+//   mongoUri: process.env.mongoUri,
+//   sgAPIKey: process.env.sgAPIKey,
+//   herucciEmail: process.env.herucciEmail,
 // };
 
 export default config;
