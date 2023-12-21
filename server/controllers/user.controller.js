@@ -1,24 +1,43 @@
 import User from "../models/user.model.js";
-import errorHandler from "../helpers/dbErrorHandlers.js";
 import PurchaseHistory from "../models/purchaseHistory.model.js";
+import sgMail from "@sendgrid/mail";
+import dotenv from "dotenv";
+import config from "../../config/config.js";
+
+dotenv.config();
+sgMail.setApiKey(process.env.sgAPIKey);
+
+const sendNotification = async (user) => {
+  const correo = {
+    to: user.email,
+    from: config.henrucciEmail,
+    templateId: "d-c22f2e10e108452284a7216023858f7d",
+    dynamic_template_data: {
+      subject: "Confirmacion de Registro",
+      name: user.name,
+    },
+  };
+  await sgMail.send(correo);
+};
 
 const create = async (req, res) => {
   const user = new User(req.body);
   try {
-    await user.save();
+    await user.save().then(() => {
+      sendNotification(user);
+    });
     return res.status(200).json({ message: "Successfully signed up!" });
   } catch (err) {
-    return res.status(400).json({ error: errorHandler.getErrorMessage(err) });
+    return res.status(400).json({ error: err });
   }
 };
+
 const list = async (req, res) => {
   try {
     let users = await User.find({ isDeleted: false })
-      .select("name lastname email updated purchaseHistory created")
+      .select("name lastname email updated shoppingCart created")
       .populate({
-        path: "purchaseHistory",
-        select: "product created",
-        populate: { path: "product", select: "title price" },
+        path: "shoppingCart",
       });
     res.json(users);
   } catch (err) {
@@ -53,6 +72,7 @@ const read = (req, res) => {
   req.profile.salt = undefined;
   return res.json(req.profile);
 };
+
 const update = async (req, res) => {
   try {
     let user = req.profile;
@@ -90,4 +110,31 @@ const remove = async (req, res) => {
   }
 };
 
-export default { create, userByID, read, list, remove, update };
+const addToShoppingCart = async (req, res) => {
+  const { product } = req.query;
+  try {
+    await User.findByIdAndUpdate(
+      req.profile._id,
+      { $set: { shoppingCart: [...req.profile.shoppingCart, product] } },
+      { new: true }
+    );
+    return res
+      .status(200)
+      .json({ message: "product has being added to the shopping cart" });
+  } catch (error) {
+    return res.status(500).json({
+      message: "internal server error: product not added to shopping cart",
+    });
+    console.log(error);
+  }
+};
+
+export default {
+  create,
+  userByID,
+  read,
+  list,
+  remove,
+  update,
+  addToShoppingCart,
+};

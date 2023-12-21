@@ -19,20 +19,18 @@ import reviewRoutes from "./routes/review.routes.js";
 import searchRoutes from "./routes/search.routes.js";
 import purchaseHistoryRoutes from "./routes/search.routes.js";
 import filterRoutes from "./routes/filters.routes.js";
+import photosRoutes from "./routes/photos.routes.js";
 
 const app = express();
 
-//project's URL
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
-//middleware
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(cookieParser());
-app.use(compress());
 const corsOptions = {
-  origin: ["https://admindashboard.up.railway.app", "http://localhost:3000"],
+  origin: [
+    "http://localhost:3001",
+    "http://localhost:3000",
+    "https://pf-henry-15a-ecommerce-frontend.vercel.app",
+    "https://admindashboard.up.railway.app",
+  ],
+
   credentials: true,
   methods: "GET,PUT,POST,DELETE,PATCH,OPTIONS",
   allowedHeaders: [
@@ -43,18 +41,28 @@ const corsOptions = {
     "Authorization",
     "Cache-Control",
   ],
+  optionSuccessStatus: 204,
 };
 app.use(cors(corsOptions));
 app.options("*", cors(corsOptions));
+
+//project's URL
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+//middleware
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cookieParser());
+app.use(compress());
+
 app.use(helmet());
 
 // Routes
-app.use(express.static(path.join(__dirname, "admin-dashboard/build")));
 app.get("/", (req, res) => {
-  //res.status(200).send(Template());
-  //res.sendFile(path.join(__dirname, "admin-dashboard/build", "index.html"));
-  res.redirect("admindashboard.up.railway.app");
+  res.redirect("https://admindashboard.up.railway.app");
 });
+
 app.use("/", authRoutes);
 app.use("/", userRoutes);
 app.use("/", adminRoutes);
@@ -65,6 +73,7 @@ app.use("/", reviewRoutes);
 app.use("/", searchRoutes);
 app.use("/", purchaseHistoryRoutes);
 app.use("/", filterRoutes);
+app.use("/", photosRoutes);
 
 // Error handling
 app.use((err, req, res, next) => {
