@@ -4,9 +4,8 @@ import sgMail from "@sendgrid/mail";
 import dotenv from "dotenv";
 import config from "../../config/config.js";
 
-dotenv.config();
-sgMail.setApiKey(process.env.sgAPIKey);
-
+sgMail.setApiKey(config.sgAPIKey);
+console.log("key: ", config.sgAPIKey);
 const sendNotification = async (user) => {
   const correo = {
     to: user.email,
@@ -17,7 +16,12 @@ const sendNotification = async (user) => {
       name: user.name,
     },
   };
-  await sgMail.send(correo);
+  try {
+    await sgMail.send(correo);
+  } catch (error) {
+    console.log("error sending the confirmation email");
+    console.log(error);
+  }
 };
 
 const create = async (req, res) => {
