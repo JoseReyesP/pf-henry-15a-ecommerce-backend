@@ -4,6 +4,7 @@ import authCtrl from "../controllers/auth.controller.js";
 const router = express.Router();
 
 router.route("/auth/signin").post(authCtrl.signin);
+router.route("/auth/signin/google").post(authCtrl.signinGoogle);
 router.route("/auth/signout").get(authCtrl.signout);
 
 export default router;
