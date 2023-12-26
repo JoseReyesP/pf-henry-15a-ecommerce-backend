@@ -1,3 +1,4 @@
+import {OAuth2Client} from 'google-auth-library';
 import User from "../models/user.model.js";
 import userCtrl from "../controllers/user.controller.js";
 import jwt from "jsonwebtoken";
@@ -31,6 +32,33 @@ const signin = async (req, res) => {
     });
   } catch (err) {
     return res.status(401).json({ error: "Could not sign in" });
+  }
+};
+
+async function verify(token) {
+  const client = new OAuth2Client();
+  const ticket = await client.verifyIdToken({
+      idToken: token,
+      audience: process.env.GOOGLE_CLIENT_ID,
+  });
+  const payload = ticket.getPayload();
+  //console.log("PAYLOAD", payload);
+  const userid = payload['sub'];
+  return payload;
+}
+const signinGoogle = async(req, res) => {
+  const { token } = req.body;
+  try {
+    if(!token) throw new Error("token is not specified");
+    const payload = await verify(token);
+    const exists = await User.exists({ email: payload.email, role: "user" });
+    //console.log("exists", exists);
+    if(exists) return res.status(200).json({message: "Successfully signed up!"});
+    const newUser = await User.create({ name:payload.given_name, lastname:payload.family_name, email: payload.email, password:payload.sub });
+    //console.log(newUser);
+    res.status(200).json(newUser);
+  } catch (error) {
+    res.status(400).json({error:error.message});
   }
 };
 
@@ -86,4 +114,4 @@ const isAdmin = (req, res) => {
   return res.status(200).json({ message: true });
 };
 
-export default { signin, signout, requireSignin, hasAuthorization, isAdmin };
+export default { signin, signout, requireSignin, hasAuthorization, isAdmin, signinGoogle };
