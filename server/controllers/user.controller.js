@@ -10,10 +10,10 @@ import sendNotification from "../controllers/notifications.controller.js";
 dotenv.config();
 
 const create = async (req, res) => {
-  //const user = new User(req.body);
+  const user = new User(req.body);
   const { email, name } = req.body;
   try {
-    //await user.save()
+    await user.save();
     await sendNotification(email, name);
     return res.status(200).json({ message: "Successfully signed up!" });
   } catch (err) {
