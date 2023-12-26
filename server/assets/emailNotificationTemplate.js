@@ -1,4 +1,5 @@
-const mensaje2 = `<html data-editor-version="2" class="sg-campaigns" xmlns="http://www.w3.org/1999/xhtml">
+export const emailMessage = (name) => {
+  return `<html data-editor-version="2" class="sg-campaigns" xmlns="http://www.w3.org/1999/xhtml">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
@@ -118,6 +119,7 @@ body {font-family: 'Viga', sans-serif;}
 </style><!--End Head user entered-->
 </head>
 <body>
+<img src=${logo} />
   <center class="wrapper" data-link-color="#000000" data-body-style="font-size:14px; font-family:inherit; color:#000000; background-color:#FFFFFF;">
     <div class="webkit">
       <table cellpadding="0" cellspacing="0" border="0" width="100%" class="wrapper" bgcolor="#FFFFFF">
@@ -158,7 +160,7 @@ body {font-family: 'Viga', sans-serif;}
 <tbody>
   <tr>
     <td style="font-size:6px; line-height:10px; padding:0px 0px 0px 0px;" valign="top" align="center">
-      <img class="max-width" border="0" style="display:block; color:#000000; text-decoration:none; font-family:Helvetica, arial, sans-serif; font-size:16px;" width="130" alt="" data-proportionally-constrained="true" data-responsive="false" src="" >
+      <img class="max-width" border="0" style="display:block; color:#000000; text-decoration:none; font-family:Helvetica, arial, sans-serif; font-size:16px;" width="130" alt="" data-proportionally-constrained="true" data-responsive="false" src="" > ACA VA EL LOGO
     </td>
   </tr>
 </tbody>
@@ -178,7 +180,7 @@ body {font-family: 'Viga', sans-serif;}
 </table><table class="module" role="module" data-type="text" border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;" data-muid="bff8ffa1-41a9-4aab-a2ea-52ac3767c6f4" data-mc-module-version="2019-10-22">
 <tbody>
   <tr>
-    <td style="padding:18px 30px 18px 30px; line-height:40px; text-align:inherit; background-color:#323041;" height="100%" valign="top" bgcolor="#323041" role="module-content"><div><div style="font-family: inherit; text-align: center"><span style="color: #A98A2E; font-size: 40px; font-family: inherit">¡Confirmación exitosa!  Ahora eres parte de nuestra comunidad. Descubre lo que tenemos reservado para ti. Bienvenido !</span></div><div></div></div></td>
+    <td style="padding:18px 30px 18px 30px; line-height:40px; text-align:inherit; background-color:#323041;" height="100%" valign="top" bgcolor="#323041" role="module-content"><div><div style="font-family: inherit; text-align: center"><span style="color: #A98A2E; font-size: 40px; font-family: inherit">¡Confirmación exitosa! ${name}, ahora eres parte de nuestra comunidad. Descubre lo que tenemos reservado para ti. Bienvenido !</span></div><div></div></div></td>
   </tr>
 </tbody>
 </table><table class="module" role="module" data-type="text" border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;" data-muid="2f94ef24-a0d9-4e6f-be94-d2d1257946b0" data-mc-module-version="2019-10-22">
@@ -310,6 +312,5 @@ body {font-family: 'Viga', sans-serif;}
     </div>
   </center>
 </body>
-</html>`
-export  {mensaje2};
-
+</html>`;
+};
