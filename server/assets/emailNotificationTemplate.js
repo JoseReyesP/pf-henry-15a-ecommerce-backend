@@ -119,7 +119,7 @@ body {font-family: 'Viga', sans-serif;}
 </style><!--End Head user entered-->
 </head>
 <body>
-<img src=${logo} />
+<img /> 
   <center class="wrapper" data-link-color="#000000" data-body-style="font-size:14px; font-family:inherit; color:#000000; background-color:#FFFFFF;">
     <div class="webkit">
       <table cellpadding="0" cellspacing="0" border="0" width="100%" class="wrapper" bgcolor="#FFFFFF">
