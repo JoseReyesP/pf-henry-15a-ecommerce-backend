@@ -3,36 +3,21 @@ import PurchaseHistory from "../models/purchaseHistory.model.js";
 import sgMail from "@sendgrid/mail";
 import dotenv from "dotenv";
 import config from "../../config/config.js";
-
-sgMail.setApiKey(config.sgAPIKey);
-console.log("key: ", config.sgAPIKey);
-const sendNotification = async (user) => {
-  const correo = {
-    to: user.email,
-    from: config.henrucciEmail,
-    templateId: "d-c22f2e10e108452284a7216023858f7d",
-    dynamic_template_data: {
-      subject: "Confirmacion de Registro",
-      name: user.name,
-    },
-  };
-  try {
-    await sgMail.send(correo);
-  } catch (error) {
-    console.log("error sending the confirmation email");
-    console.log(error);
-  }
-};
+import nodemailer from "nodemailer";
+import { google } from "googleapis";
+import { OAuth2Client } from "google-auth-library";
+import sendNotification from "../controllers/notifications.controller.js";
+dotenv.config();
 
 const create = async (req, res) => {
   const user = new User(req.body);
+  const { email, name } = req.body;
   try {
-    await user.save().then(() => {
-      sendNotification(user);
-    });
+    await user.save();
+    await sendNotification(email, name);
     return res.status(200).json({ message: "Successfully signed up!" });
   } catch (err) {
-    return res.status(400).json({ error: err });
+    return res.status(400).json({ error: "error al crear usuario " + err });
   }
 };
 
