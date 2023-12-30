@@ -39,9 +39,12 @@ const userByID = async (req, res, next, id) => {
   // to the next controller function.
   try {
     let user = await User.findById(id);
+    console.log("🚀 ~ file: user.controller.js:42 ~ userByID ~ user:", user);
+    console.log("🚀 ~ file: user.controller.js:42 ~ userByID ~ user:", !user);
+    console.log("🚀 ~ file: user.controller.js:42 ~ userByID ~ id:", id);
     if (!user) {
       return res.status(400).json({
-        error: "User not found",
+        error: "UserByID: User not found",
       });
     }
     req.profile = user;
@@ -65,6 +68,10 @@ const read = (req, res) => {
 const update = async (req, res) => {
   try {
     let user = req.profile;
+    console.log(
+      "🚀 ~ file: user.controller.js:68 ~ update ~ req.profile:",
+      req.profile
+    );
     req.body = { ...req.body, updated: Date.now() };
     await User.findByIdAndUpdate(user._id, { $set: req.body }, { new: true });
     res
