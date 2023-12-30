@@ -10,7 +10,7 @@ router.route("/api/users/:userId/shoppingCart").get(userCtrl.addToShoppingCart);
 
 router
   .route("/api/users/:userId")
-  .get(authCtrl.requireSignin, userCtrl.read)
+  .get(userCtrl.read)
   .put(authCtrl.requireSignin, authCtrl.hasAuthorization, userCtrl.update)
   .delete(authCtrl.requireSignin, authCtrl.hasAuthorization, userCtrl.remove);
 
