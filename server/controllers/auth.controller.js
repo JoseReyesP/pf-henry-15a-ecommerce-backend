@@ -1,9 +1,10 @@
-import {OAuth2Client} from 'google-auth-library';
+import { OAuth2Client } from "google-auth-library";
 import User from "../models/user.model.js";
 import userCtrl from "../controllers/user.controller.js";
 import jwt from "jsonwebtoken";
 import { expressjwt } from "express-jwt";
 import config from "./../../config/config.js";
+import sgMail from "@sendgrid/mail";
 
 const signin = async (req, res) => {
   // The POST request object receives the email and password in req.body. This email is
@@ -38,29 +39,32 @@ const signin = async (req, res) => {
 async function verify(token) {
   const client = new OAuth2Client();
   const ticket = await client.verifyIdToken({
-      idToken: token,
-      audience: process.env.GOOGLE_CLIENT_ID,
+    idToken: token,
+    audience: process.env.GOOGLE_CLIENT_ID,
   });
   const payload = ticket.getPayload();
   const userid = payload['sub'];
   return payload;
 }
-const signinGoogle = async(req, res) => {
+const signinGoogle = async(req, res, next) => {
   const { token } = req.body;
   try {
     if(!token) throw new Error("token is not specified");
     const response = await verify(token)
     .then( async (payload) => {
       if(!payload.email) throw new Error("No existe campo email en payload")
-      res.cookie("t", token, { expire: payload.exp });
-      const exists = await User.exists({ email: payload.email, role: "user" })
+      const exists = await User.findOne({ email: payload.email, role: "user" })
       if(exists) return {message: "Successfully signed up!", token};
-      const newUser = await User.create({ name:payload.given_name, lastname:payload.family_name, email: payload.email, password:payload.sub });
+      const newUser = await User.create({ name:payload.given_name, lastname:payload.family_name, email: payload.email, password:payload.sub })
+      .then((user) => {
+          return user;
+      });
+      console.log("newUser",newUser);
       return {user: newUser, token};
     });
     res.status(200).json(response);
   } catch (error) {
-    res.status(400).json({error:error.message});
+    res.status(400).json({ error: error.message });
   }
 };
 
@@ -72,38 +76,22 @@ const signout = (req, res) => {
   return res.status(200).json({ message: "signed out" });
 };
 
-const requireSignin = async (req, res, next) =>{
-  const {provider} = req.query;
-  const authHeader = req.headers['authorization']
-  //console.log("authHeader", authHeader);
-  const token = authHeader && authHeader.split(' ')[1]
-  try {
-    if (provider === 'google') {
-      const payload = await verify(token);
-      //console.log("payload",payload);
-      if(payload.email_verified) next();
-      else throw new Error(payload);
-    }
-    else{
-      expressjwt({
-        // We can add requireSignin to any route that should be protected against
-        // unauthenticated access.
-        secret: config.jwtSecret,
-        userProperty: "auth",
-        algorithms: ["HS256"],
-      });
-      next();
-    }
-  } catch (error) {
-    res.status(400).json(error.message);
-  }
-} 
+const requireSignin = expressjwt({
+  // We can add requireSignin to any route that should be protected against
+  // unauthenticated access.
+  secret: config.jwtSecret,
+  userProperty: "auth",
+  algorithms: ["HS256"],
+});
+
 const hasAuthorization = async (req, res, next) => {
   const authorized = req.profile && req.auth && req.profile._id == req.auth._id;
   if (!authorized) {
     // here we check if the user trying to modify the profile is an Admin
     try {
+      console.log(req.auth);
       const adminProfile = await User.findById(req.auth._id);
+
       const { role } = adminProfile;
       if (role !== "admin") {
         // if the modifier profile is not an admin then is not authorized
@@ -112,7 +100,9 @@ const hasAuthorization = async (req, res, next) => {
         });
       }
     } catch (err) {
-      return res.status(400).json({ message: "User not found" });
+      return res
+        .status(400)
+        .json({ message: "HasAutorization: User not found" });
     }
   } else if (
     // this conditional is intended to increase the level of security
@@ -136,4 +126,11 @@ const isAdmin = (req, res) => {
   return res.status(200).json({ message: true });
 };
 
-export default { signin, signout, requireSignin, hasAuthorization, isAdmin, signinGoogle };
+export default {
+  signin,
+  signout,
+  requireSignin,
+  hasAuthorization,
+  isAdmin,
+  signinGoogle,
+};
