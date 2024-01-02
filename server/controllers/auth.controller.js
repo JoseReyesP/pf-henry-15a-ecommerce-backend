@@ -4,6 +4,7 @@ import userCtrl from "../controllers/user.controller.js";
 import jwt from "jsonwebtoken";
 import { expressjwt } from "express-jwt";
 import config from "./../../config/config.js";
+import sgMail from "@sendgrid/mail";
 
 const signin = async (req, res) => {
   // The POST request object receives the email and password in req.body. This email is
@@ -42,25 +43,24 @@ async function verify(token) {
     audience: process.env.GOOGLE_CLIENT_ID,
   });
   const payload = ticket.getPayload();
-  const userid = payload["sub"];
+  const userid = payload['sub'];
   return payload;
 }
-const signinGoogle = async (req, res) => {
+const signinGoogle = async(req, res, next) => {
   const { token } = req.body;
   try {
-    if (!token) throw new Error("token is not specified");
-    const response = await verify(token).then(async (payload) => {
-      if (!payload.email) throw new Error("No existe campo email en payload");
-      res.cookie("t", token, { expire: payload.exp });
-      const exists = await User.exists({ email: payload.email, role: "user" });
-      if (exists) return { message: "Successfully signed up!", token };
-      const newUser = await User.create({
-        name: payload.given_name,
-        lastname: payload.family_name,
-        email: payload.email,
-        password: payload.sub,
+    if(!token) throw new Error("token is not specified");
+    const response = await verify(token)
+    .then( async (payload) => {
+      if(!payload.email) throw new Error("No existe campo email en payload")
+      const exists = await User.findOne({ email: payload.email, role: "user" })
+      if(exists) return {message: "Successfully signed up!", token};
+      const newUser = await User.create({ name:payload.given_name, lastname:payload.family_name, email: payload.email, password:payload.sub })
+      .then((user) => {
+          return user;
       });
-      return { user: newUser, token };
+      console.log("newUser",newUser);
+      return {user: newUser, token};
     });
     res.status(200).json(response);
   } catch (error) {
@@ -89,6 +89,7 @@ const hasAuthorization = async (req, res, next) => {
   if (!authorized) {
     // here we check if the user trying to modify the profile is an Admin
     try {
+      console.log(req.auth);
       const adminProfile = await User.findById(req.auth._id);
 
       const { role } = adminProfile;
