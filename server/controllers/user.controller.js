@@ -2,33 +2,14 @@ import User from "../models/user.model.js";
 import PurchaseHistory from "../models/purchaseHistory.model.js";
 import sgMail from "@sendgrid/mail";
 import dotenv from "dotenv";
-import config from "../../config/config.js";
-
-sgMail.setApiKey(config.sgAPIKey);
-console.log("key: ", config.sgAPIKey);
-const sendNotification = async (user) => {
-  const correo = {
-    to: user.email,
-    from: config.henrucciEmail,
-    templateId: "d-c22f2e10e108452284a7216023858f7d",
-    dynamic_template_data: {
-      subject: "Confirmacion de Registro",
-      name: user.name,
-    },
-  };
-  try {
-    await sgMail.send(correo);
-  } catch (error) {
-    console.log("error sending the confirmation email");
-    console.log(error);
-  }
-};
+import sendNotification from "../controllers/notifications.controller.js";
+dotenv.config();
 
 const create = async (req, res) => {
   const user = new User(req.body);
   try {
     await user.save().then(() => {
-      sendNotification(user);
+      sendNotification(user.email,user.name);
     });
     return res.status(200).json({ message: "Successfully signed up!" });
   } catch (err) {
