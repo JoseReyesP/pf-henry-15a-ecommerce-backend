@@ -1,4 +1,4 @@
-import {OAuth2Client} from 'google-auth-library';
+import { OAuth2Client } from "google-auth-library";
 import User from "../models/user.model.js";
 import userCtrl from "../controllers/user.controller.js";
 import jwt from "jsonwebtoken";
@@ -39,8 +39,8 @@ const signin = async (req, res) => {
 async function verify(token) {
   const client = new OAuth2Client();
   const ticket = await client.verifyIdToken({
-      idToken: token,
-      audience: process.env.GOOGLE_CLIENT_ID,
+    idToken: token,
+    audience: process.env.GOOGLE_CLIENT_ID,
   });
   const payload = ticket.getPayload();
   const userid = payload['sub'];
@@ -64,7 +64,7 @@ const signinGoogle = async(req, res, next) => {
     });
     res.status(200).json(response);
   } catch (error) {
-    res.status(400).json({error:error.message});
+    res.status(400).json({ error: error.message });
   }
 };
 
@@ -91,6 +91,7 @@ const hasAuthorization = async (req, res, next) => {
     try {
       console.log(req.auth);
       const adminProfile = await User.findById(req.auth._id);
+
       const { role } = adminProfile;
       if (role !== "admin") {
         // if the modifier profile is not an admin then is not authorized
@@ -99,7 +100,9 @@ const hasAuthorization = async (req, res, next) => {
         });
       }
     } catch (err) {
-      return res.status(400).json({ message: "User not found" });
+      return res
+        .status(400)
+        .json({ message: "HasAutorization: User not found" });
     }
   } else if (
     // this conditional is intended to increase the level of security
@@ -123,4 +126,11 @@ const isAdmin = (req, res) => {
   return res.status(200).json({ message: true });
 };
 
-export default { signin, signout, requireSignin, hasAuthorization, isAdmin, signinGoogle };
+export default {
+  signin,
+  signout,
+  requireSignin,
+  hasAuthorization,
+  isAdmin,
+  signinGoogle,
+};

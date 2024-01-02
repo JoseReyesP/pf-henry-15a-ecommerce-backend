@@ -3,7 +3,8 @@ import nodemailer from "nodemailer";
 import { emailMessage } from "../assets/emailNotificationTemplate.js";
 
 const oauth2Client = new OAuth2Client({
-  clientId: "469081136823-59el17u5d6h8386mtjpud63ioj5bl0t6.apps.googleusercontent.com",
+  clientId:
+    "469081136823-59el17u5d6h8386mtjpud63ioj5bl0t6.apps.googleusercontent.com",
   clientSecret: "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",
   redirectUri: "https://developers.google.com/oauthplayground",
 });
@@ -15,12 +16,8 @@ oauth2Client.setCredentials({
 
 // Función para enviar notificación
 const sendNotification = async (userEmail, userName) => {
-  console.log("userEmail", userEmail);
-  console.log("userName", userName);
   try {
-    console.log("enviando...");
     const accessToken = await oauth2Client.getAccessToken();
-    //console.log("accessToken", accessToken);
 
     const transporter = nodemailer.createTransport({
       service: "gmail",
@@ -45,7 +42,7 @@ const sendNotification = async (userEmail, userName) => {
       console.log("Access Token: %s", token.accessToken);
       console.log("Expires: %s", new Date(token.expires));
     });
-
+    
     const mailOptions = {
       from: "henrucciwebsite@gmail.com",
       to: userEmail,

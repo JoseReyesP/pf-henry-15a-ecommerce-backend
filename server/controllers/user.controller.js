@@ -2,18 +2,22 @@ import User from "../models/user.model.js";
 import PurchaseHistory from "../models/purchaseHistory.model.js";
 import sgMail from "@sendgrid/mail";
 import dotenv from "dotenv";
+import config from "../../config/config.js";
+import nodemailer from "nodemailer";
+import { google } from "googleapis";
+import { OAuth2Client } from "google-auth-library";
 import sendNotification from "../controllers/notifications.controller.js";
 dotenv.config();
 
 const create = async (req, res) => {
   const user = new User(req.body);
+  const { email, name } = req.body;
   try {
-    await user.save().then(() => {
-      sendNotification(user.email,user.name);
-    });
+    await user.save();
+    await sendNotification(email, name);
     return res.status(200).json({ message: "Successfully signed up!" });
   } catch (err) {
-    return res.status(400).json({ error: err });
+    return res.status(400).json({ error: "error al crear usuario " + err });
   }
 };
 
@@ -35,9 +39,12 @@ const userByID = async (req, res, next, id) => {
   // to the next controller function.
   try {
     let user = await User.findById(id);
+    console.log("🚀 ~ file: user.controller.js:42 ~ userByID ~ user:", user);
+    console.log("🚀 ~ file: user.controller.js:42 ~ userByID ~ user:", !user);
+    console.log("🚀 ~ file: user.controller.js:42 ~ userByID ~ id:", id);
     if (!user) {
       return res.status(400).json({
-        error: "User not found",
+        error: "UserByID: User not found",
       });
     }
     req.profile = user;
@@ -61,6 +68,10 @@ const read = (req, res) => {
 const update = async (req, res) => {
   try {
     let user = req.profile;
+    console.log(
+      "🚀 ~ file: user.controller.js:68 ~ update ~ req.profile:",
+      req.profile
+    );
     req.body = { ...req.body, updated: Date.now() };
     await User.findByIdAndUpdate(user._id, { $set: req.body }, { new: true });
     res
