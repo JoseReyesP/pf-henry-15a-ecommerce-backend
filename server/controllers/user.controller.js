@@ -4,7 +4,6 @@ import sgMail from "@sendgrid/mail";
 import dotenv from "dotenv";
 import config from "../../config/config.js";
 import nodemailer from "nodemailer";
-import { google } from "googleapis";
 import { OAuth2Client } from "google-auth-library";
 import sendNotification from "../controllers/notifications.controller.js";
 dotenv.config();

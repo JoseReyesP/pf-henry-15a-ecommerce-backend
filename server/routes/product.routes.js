@@ -32,6 +32,8 @@ router
   .get(productCtrl.list)
   .post(upload.single("photo"), productCtrl.create);
 
+router.route("/api/product/top/:end").get(productCtrl.top);
+
 router
   .route("/api/product/:productId")
   .get(productCtrl.read)
