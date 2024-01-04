@@ -119,4 +119,43 @@ const photo = (req, res, next) => {
   next();
 };
 
-export default { create, productByID, read, list, remove, update, photo };
+ const top = async(req, res) => {
+  const {end} = req.params;
+  try {
+    const products = await Product.find({ isDeleted: false })
+    .populate({
+      path: "category",
+      select: "name",
+    })
+    .populate({
+      path: "reviews",
+      select: "user rating comment",
+      populate: { path: "user", select: "name lastname email" },
+    });
+    const top = products.sort((a, b) => {
+      let ratingA = a.averageRating;
+      let ratingB = b.averageRating;
+      if (!a.averageRating) {
+        ratingA = 0;
+      }
+      if (!b.averageRating) {
+        ratingB = 0;
+      }
+      if (ratingA > ratingB) {
+        return -1;
+      }
+      if (ratingA < ratingB) {
+        return 1;
+      }
+      return 0;
+    });
+    res.setHeader("Content-Security-Policy", "img-src 'self' data:;");
+    res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
+    res.status(200).json(top.slice(0,end));
+  } catch (error) {
+    res.status(400).json({error: error.message});
+  }
+
+ };
+
+export default { create, productByID, read, list, remove, update, photo, top };
