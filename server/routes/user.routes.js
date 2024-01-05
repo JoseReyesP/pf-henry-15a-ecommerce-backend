@@ -14,6 +14,11 @@ router
   .put(authCtrl.requireSignin, authCtrl.hasAuthorization, userCtrl.update)
   .delete(authCtrl.requireSignin, authCtrl.hasAuthorization, userCtrl.remove);
 
+router
+  .route("/api/favorites/:userId")
+  .post(authCtrl.requireSignin, authCtrl.hasAuthorization, userCtrl.addToFavorites)
+  .delete(authCtrl.requireSignin, authCtrl.hasAuthorization, userCtrl.deleteFavorites);
+
 router.param("userId", userCtrl.userByID);
 
 export default router;

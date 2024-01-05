@@ -28,6 +28,10 @@ const UserSchema = new mongoose.Schema({
     type: String,
     default: "user",
   },
+  favorites: {
+    type: Array,
+    default: [],
+  },
   purchaseHistory: [
     {
       type: mongoose.Schema.Types.ObjectId,
