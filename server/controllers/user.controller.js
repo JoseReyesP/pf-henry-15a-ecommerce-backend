@@ -4,7 +4,6 @@ import sgMail from "@sendgrid/mail";
 import dotenv from "dotenv";
 import config from "../../config/config.js";
 import nodemailer from "nodemailer";
-import { google } from "googleapis";
 import { OAuth2Client } from "google-auth-library";
 import sendNotification from "../controllers/notifications.controller.js";
 dotenv.config();
@@ -24,7 +23,7 @@ const create = async (req, res) => {
 const list = async (req, res) => {
   try {
     let users = await User.find({ isDeleted: false })
-      .select("name lastname email updated shoppingCart created")
+      .select("name lastname email address updated shoppingCart created role")
       .populate({
         path: "shoppingCart",
       });
@@ -39,9 +38,6 @@ const userByID = async (req, res, next, id) => {
   // to the next controller function.
   try {
     let user = await User.findById(id);
-    console.log("🚀 ~ file: user.controller.js:42 ~ userByID ~ user:", user);
-    console.log("🚀 ~ file: user.controller.js:42 ~ userByID ~ user:", !user);
-    console.log("🚀 ~ file: user.controller.js:42 ~ userByID ~ id:", id);
     if (!user) {
       return res.status(400).json({
         error: "UserByID: User not found",
@@ -68,10 +64,6 @@ const read = (req, res) => {
 const update = async (req, res) => {
   try {
     let user = req.profile;
-    console.log(
-      "🚀 ~ file: user.controller.js:68 ~ update ~ req.profile:",
-      req.profile
-    );
     req.body = { ...req.body, updated: Date.now() };
     await User.findByIdAndUpdate(user._id, { $set: req.body }, { new: true });
     res
@@ -121,7 +113,6 @@ const addToShoppingCart = async (req, res) => {
     return res.status(500).json({
       message: "internal server error: product not added to shopping cart",
     });
-    console.log(error);
   }
 };
 
