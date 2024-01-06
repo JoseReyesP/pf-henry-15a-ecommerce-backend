@@ -65,6 +65,10 @@ const update = async (req, res) => {
   try {
     let user = req.profile;
     req.body = { ...req.body, updated: Date.now() };
+    console.log(
+      "🚀 ~ file: user.controller.js:68 ~ update ~ req.body:",
+      req.body
+    );
     await User.findByIdAndUpdate(user._id, { $set: req.body }, { new: true });
     res
       .status(200)
