@@ -1,7 +1,7 @@
 import express from "express";
 import authCtrl from "../controllers/auth.controller.js";
 import reviewCtrl from "../controllers/review.controller.js";
-import userController from "../controllers/user.controller.js";
+import userCtrl from "../controllers/user.controller.js";
 
 const router = express.Router();
 
@@ -9,6 +9,8 @@ router
   .route("/api/review")
   .get(reviewCtrl.list)
   .post(authCtrl.requireSignin, reviewCtrl.create);
+
+router.route("/api/userReviews/:userId").get(reviewCtrl.listPerUser);
 
 router
   .route("/api/review/:reviewId")
