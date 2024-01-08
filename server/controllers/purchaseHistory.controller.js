@@ -34,6 +34,23 @@ const list = async (req, res) => {
     return res.status(400).json({ error: err.message });
   }
 };
+
+const listPerUser = async (req, res) => {
+  const user = req.profile;
+  try {
+    const list = await PurchaseHistory.find({ user: user._id }).populate({
+      path: "user",
+      select: "name lastname email",
+    });
+    res.status(200).json(list);
+  } catch (error) {
+    res.status(400).json({
+      message: "can't find any purchase history with that user ID",
+      error,
+    });
+  }
+};
+
 const purchaseHistoryByID = async (req, res, next, id) => {
   try {
     let purchaseHistory = await PurchaseHistory.findById(id);
@@ -96,4 +113,12 @@ const remove = async (req, res) => {
   }
 };
 
-export default { create, purchaseHistoryByID, read, list, remove, update };
+export default {
+  create,
+  purchaseHistoryByID,
+  read,
+  list,
+  remove,
+  update,
+  listPerUser,
+};
