@@ -13,6 +13,11 @@ const PurchaseHistorySchema = new mongoose.Schema({
       required: true,
     },
   ],
+  status: {
+    type: String,
+    enum: ["pending", "delivering", "complete"],
+    default: "pending",
+  },
   isDeleted: {
     type: Boolean,
     default: false,

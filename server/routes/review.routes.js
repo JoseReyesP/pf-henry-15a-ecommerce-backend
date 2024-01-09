@@ -10,16 +10,13 @@ router
   .get(reviewCtrl.list)
   .post(authCtrl.requireSignin, reviewCtrl.create);
 
-router
-  .route("/api/userReviews/:userId")
-  .get(reviewCtrl.listPerUser);
+router.route("/api/userReviews/:userId").get(reviewCtrl.listPerUser);
 
 router
   .route("/api/review/:reviewId")
   .get(reviewCtrl.read)
   .put(authCtrl.requireSignin, reviewCtrl.update)
   .delete(authCtrl.requireSignin, reviewCtrl.remove);
-
 
 router.param("reviewId", reviewCtrl.reviewByID);
 
