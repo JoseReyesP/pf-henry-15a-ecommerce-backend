@@ -102,12 +102,8 @@ const listPerUser = async (req, res) => {
   const {userId} = req.params;
   try {
     let reviews = await Review.find({ isDeleted: false })
-    .select("user product rating comment")
-    .populate({
-      path: "user",
-      select: "name lastname email",
-    });
-    const userReviews = reviews.filter(review => review.user._id.toString() === userId);
+    .select("user product rating comment");
+    const userReviews = reviews.filter(review => review.user.toString() === userId);
     res.status(200).json(userReviews);
   } catch (error) {
     res.status(400).json({error: error.message});
