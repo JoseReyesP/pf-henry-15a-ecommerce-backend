@@ -18,8 +18,10 @@ const create = async (req, res) => {
 };
 const list = async (req, res) => {
   try {
+    console.log("🚀 ~ list ~ req.headers.origin:", req.headers.origin);
     let products =
-      req.headers.origin == "https://admindashboard.up.railway.app"
+      req.headers.origin == "https://admindashboard.up.railway.app" ||
+      "http://localhost:3000"
         ? await Product.find()
             .populate({
               path: "category",
