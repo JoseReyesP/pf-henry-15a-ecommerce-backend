@@ -12,6 +12,10 @@ const UserSchema = new mongoose.Schema({
     trim: true,
     required: "Lastname is required",
   },
+  image: {
+    type: String,
+    default: "no profile picture",
+  },
   email: {
     type: String,
     trim: true,
