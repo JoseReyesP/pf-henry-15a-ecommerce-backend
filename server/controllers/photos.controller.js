@@ -1,7 +1,6 @@
 import Photos from "../models/photos.model.js";
 
 const create = async (req, res) => {
-  console.log(req.file);
   const photo = new Photos({
     name: req.file.originalname,
     photoData: {

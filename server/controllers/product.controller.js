@@ -29,7 +29,7 @@ const list = async (req, res) => {
             })
             .populate({
               path: "reviews",
-              select: "user rating comment",
+              select: "user rating comment isDeleted",
               populate: { path: "user", select: "name lastname email" },
             })
         : await Product.find({ isDeleted: false })
@@ -39,7 +39,8 @@ const list = async (req, res) => {
             })
             .populate({
               path: "reviews",
-              select: "user rating comment",
+              match: { isDeleted: false },
+              select: "user rating comment isDeleted",
               populate: { path: "user", select: "name lastname email" },
             });
     res.setHeader("Content-Security-Policy", "img-src 'self' data:;");
@@ -83,6 +84,7 @@ const read = async (req, res) => {
 };
 
 const update = async (req, res) => {
+  console.log("🚀 ~ update ~ req:", req.body);
   try {
     let product = req.product;
     req.body = { ...req.body, updated: Date.now() };
