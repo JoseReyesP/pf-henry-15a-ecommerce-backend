@@ -22,11 +22,23 @@ const create = async (req, res) => {
 
 const list = async (req, res) => {
   try {
-    let users = await User.find({ isDeleted: false })
-      .select("name lastname email address updated shoppingCart created role favorites")
-      .populate({
-        path: "shoppingCart",
-      });
+    let users =
+      req.headers.origin == "https://admindashboard.up.railway.app" ||
+      "http://localhost:3000"
+        ? await User.find()
+            .select(
+              "name lastname email address updated shoppingCart created role favorites"
+            )
+            .populate({
+              path: "shoppingCart",
+            })
+        : await User.find({ isDeleted: false })
+            .select(
+              "name lastname email address updated shoppingCart created role favorites"
+            )
+            .populate({
+              path: "shoppingCart",
+            });
     res.json(users);
   } catch (err) {
     return res.status(400).json({ error: err.message });
@@ -120,29 +132,30 @@ const addToShoppingCart = async (req, res) => {
   }
 };
 
-const addToFavorites = async(req, res) => {
+const addToFavorites = async (req, res) => {
   try {
-    const exists = (await User.findById(req.params.userId).select("favorites")).favorites.includes(req.body.product);
-    if(exists) return res.status(409).json({message: "product alredy axists"});
-    await User.findByIdAndUpdate(
-      req.params.userId,
-      { $push: { favorites: req.body.product} },
-    );
-    return res.status(200).json({message: "Product added to favorites"});
+    const exists = (
+      await User.findById(req.params.userId).select("favorites")
+    ).favorites.includes(req.body.product);
+    if (exists)
+      return res.status(409).json({ message: "product alredy axists" });
+    await User.findByIdAndUpdate(req.params.userId, {
+      $push: { favorites: req.body.product },
+    });
+    return res.status(200).json({ message: "Product added to favorites" });
   } catch (error) {
-    return res.status(400).json({error: error.message})
+    return res.status(400).json({ error: error.message });
   }
 };
 
-const deleteFavorites = async(req, res) => {
+const deleteFavorites = async (req, res) => {
   try {
-    await User.findByIdAndUpdate(
-      req.params.userId,
-      { $pull: { favorites: req.body.product} },
-    );
-    return res.status(200).json({message: "Product deleted of favorites"});
+    await User.findByIdAndUpdate(req.params.userId, {
+      $pull: { favorites: req.body.product },
+    });
+    return res.status(200).json({ message: "Product deleted of favorites" });
   } catch (error) {
-    res.status(400).json({error: error.message})
+    res.status(400).json({ error: error.message });
   }
 };
 
@@ -155,5 +168,5 @@ export default {
   update,
   addToShoppingCart,
   addToFavorites,
-  deleteFavorites
+  deleteFavorites,
 };

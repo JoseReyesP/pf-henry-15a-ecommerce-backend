@@ -20,17 +20,19 @@ const create = async (req, res) => {
 };
 const list = async (req, res) => {
   try {
-    let reviews = await Review.find({ isDeleted: false })
-      .select("user product rating comment")
-      .populate({
-        path: "user",
-        select: "name lastname email",
-      });
-    // .populate({
-    //   path: "product",
-    //   select: "title price category",
-    //   //populate: { path: "category", select: "name" },
-    // });
+    let reviews =
+      req.headers.origin == "https://admindashboard.up.railway.app" ||
+      "http://localhost:3000"
+        ? await Review.find().select("user product rating comment").populate({
+            path: "user",
+            select: "name lastname email",
+          })
+        : await Review.find({ isDeleted: false })
+            .select("user product rating comment")
+            .populate({
+              path: "user",
+              select: "name lastname email",
+            });
     res.status(200).json(reviews);
   } catch (err) {
     return res.status(400).json({ error: err.message });
@@ -99,20 +101,22 @@ const remove = async (req, res) => {
 };
 
 const listPerUser = async (req, res) => {
-  const {userId} = req.params;
+  const { userId } = req.params;
   try {
-    let reviews = await Review.find({ isDeleted: false })
-    .select("user product rating comment")
-    .populate({
-      path: "user",
-      select: "name lastname email",
-    });
-    const userReviews = reviews.filter(review => review.user._id.toString() === userId);
+    let reviews =
+      req.headers.origin == "https://admindashboard.up.railway.app" ||
+      "http://localhost:3000"
+        ? await Review.find().select("user product rating comment")
+        : await Review.find({ isDeleted: false }).select(
+            "user product rating comment"
+          );
+    const userReviews = reviews.filter(
+      (review) => review.user.toString() === userId
+    );
     res.status(200).json(userReviews);
   } catch (error) {
-    res.status(400).json({error: error.message});
+    res.status(400).json({ error: error.message });
   }
-
 };
 
 export default { create, reviewByID, read, list, remove, update, listPerUser };
