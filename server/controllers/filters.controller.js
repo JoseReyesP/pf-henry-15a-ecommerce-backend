@@ -19,6 +19,7 @@ const filter = async (req, res, next) => {
         if (productsfiltered.length == 0) {
           productsfiltered = await Product.find({
             price: { $gte: Number(minprice), $lte: Number(maxprice) },
+            isDeleted: false
           })
             .populate({
               path: "category",
