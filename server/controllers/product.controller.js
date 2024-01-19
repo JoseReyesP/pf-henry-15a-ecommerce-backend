@@ -74,7 +74,7 @@ const read = async (req, res) => {
   try {
     await req.product.populate({
       path: "reviews",
-      select: "user rating comment created",
+      select: "user rating comment created isDeleted",
       populate: { path: "user", select: "name lastname email" },
     });
     return res.json(req.product);
