@@ -19,9 +19,16 @@ const UserSchema = new mongoose.Schema({
   email: {
     type: String,
     trim: true,
-    unique: "Email already exists",
+    unique: true,
     match: [/.+\@.+\..+/, "Please fill a valid email address"],
     required: "Email is required",
+    validate: {
+      validator: async function (value) {
+        const user = await mongoose.model("User").findOne({ email: value });
+        return !user;
+      },
+      message: "Email address must be unique",
+    },
   },
   address: {
     type: String,
