@@ -4,7 +4,7 @@ const search = async (req, res, next) => {
   const { searchValue } = req.params;
   const regex = new RegExp(searchValue, "i");
   try {
-    const products = await Product.find({ title: { $regex: regex } })
+    const products = await Product.find({ title: { $regex: regex }, isDeleted: false })
     .populate({
       path: "category",
       select: "name",
