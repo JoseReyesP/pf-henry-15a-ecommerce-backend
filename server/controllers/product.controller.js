@@ -18,16 +18,31 @@ const create = async (req, res) => {
 };
 const list = async (req, res) => {
   try {
-    let products = await Product.find({ isDeleted: false })
-      .populate({
-        path: "category",
-        select: "name",
-      })
-      .populate({
-        path: "reviews",
-        select: "user rating comment",
-        populate: { path: "user", select: "name lastname email" },
-      });
+    console.log("🚀 ~ list ~ req.headers.origin:", req.headers.origin);
+    let products =
+      req.headers.origin == "https://admindashboard.up.railway.app" ||
+      "http://localhost:3000"
+        ? await Product.find()
+            .populate({
+              path: "category",
+              select: "name",
+            })
+            .populate({
+              path: "reviews",
+              select: "user rating comment isDeleted",
+              populate: { path: "user", select: "name lastname email" },
+            })
+        : await Product.find({ isDeleted: false })
+            .populate({
+              path: "category",
+              select: "name",
+            })
+            .populate({
+              path: "reviews",
+              match: { isDeleted: false },
+              select: "user rating comment isDeleted",
+              populate: { path: "user", select: "name lastname email" },
+            });
     res.setHeader("Content-Security-Policy", "img-src 'self' data:;");
     res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
     res.json(products);
@@ -69,6 +84,7 @@ const read = async (req, res) => {
 };
 
 const update = async (req, res) => {
+  console.log("🚀 ~ update ~ req:", req.body);
   try {
     let product = req.product;
     req.body = { ...req.body, updated: Date.now() };
@@ -119,19 +135,19 @@ const photo = (req, res, next) => {
   next();
 };
 
- const top = async(req, res) => {
-  const {end} = req.params;
+const top = async (req, res) => {
+  const { end } = req.params;
   try {
     const products = await Product.find({ isDeleted: false })
-    .populate({
-      path: "category",
-      select: "name",
-    })
-    .populate({
-      path: "reviews",
-      select: "user rating comment",
-      populate: { path: "user", select: "name lastname email" },
-    });
+      .populate({
+        path: "category",
+        select: "name",
+      })
+      .populate({
+        path: "reviews",
+        select: "user rating comment",
+        populate: { path: "user", select: "name lastname email" },
+      });
     const top = products.sort((a, b) => {
       let ratingA = a.averageRating;
       let ratingB = b.averageRating;
@@ -151,11 +167,10 @@ const photo = (req, res, next) => {
     });
     res.setHeader("Content-Security-Policy", "img-src 'self' data:;");
     res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
-    res.status(200).json(top.slice(0,end));
+    res.status(200).json(top.slice(0, end));
   } catch (error) {
-    res.status(400).json({error: error.message});
+    res.status(400).json({ error: error.message });
   }
-
- };
+};
 
 export default { create, productByID, read, list, remove, update, photo, top };
