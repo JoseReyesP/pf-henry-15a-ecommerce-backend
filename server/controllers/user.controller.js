@@ -6,6 +6,7 @@ import config from "../../config/config.js";
 import nodemailer from "nodemailer";
 import { OAuth2Client } from "google-auth-library";
 import sendNotification from "../controllers/notifications.controller.js";
+import crypto from "crypto";
 dotenv.config();
 
 const create = async (req, res) => {
@@ -70,6 +71,16 @@ const read = (req, res) => {
   // sending the user object in the response to the requesting client.
   // req.profile.hashed_password = undefined;
   // req.profile.salt = undefined;
+  try {
+    const decryptedPassword = crypto
+      .createHmac("sha1", req.profile.hashed_password)
+      .update(req.profile.salt)
+      .digest("hex");
+    req.decryptedPassword = decryptedPassword;
+  } catch (error) {
+    console.log("🚀 ~ read ~ error:", error);
+  }
+
   return res.json(req.profile);
 };
 
