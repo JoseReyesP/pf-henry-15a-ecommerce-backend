@@ -68,8 +68,8 @@ const read = (req, res) => {
   // The read function retrieves the user details from req.profile and removes
   // sensitive information, such as the hashed_password and salt values, before
   // sending the user object in the response to the requesting client.
-  req.profile.hashed_password = undefined;
-  req.profile.salt = undefined;
+  // req.profile.hashed_password = undefined;
+  // req.profile.salt = undefined;
   return res.json(req.profile);
 };
 
