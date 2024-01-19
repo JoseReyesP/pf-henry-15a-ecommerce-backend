@@ -12,25 +12,28 @@ const filter = async (req, res, next) => {
   if (!price && !category && !rating) return next(); //it doesn't filters applied then go to paginate
   try {
     let productsfiltered = [];
-    if(price){
-      if(!price === 'asc' || !price === 'des' || !price === 'range') throw new Error('option of filter by price is not valid');
-      if (price === 'range') {
+    if (price) {
+      if (!price === "asc" || !price === "des" || !price === "range")
+        throw new Error("option of filter by price is not valid");
+      if (price === "range") {
         if (productsfiltered.length == 0) {
-          productsfiltered = await Product.find( { price: { $gte: Number(minprice), $lte: Number(maxprice) }} )
-          .populate({
-            path: "category",
-            select: "name",
+          productsfiltered = await Product.find({
+            price: { $gte: Number(minprice), $lte: Number(maxprice) },
           })
-          .populate({
-            path: "reviews",
-            select: "user rating comment",
-            populate: { path: "user", select: "name lastname email" },
-          })
-          .sort({ price: 1 });
-        }
-        else{
-          productsfiltered = productsfiltered.filter(product => {
-            product.price >= Number(minprice) || product.price <= Number(maxprice)
+            .populate({
+              path: "category",
+              select: "name",
+            })
+            .populate({
+              path: "reviews",
+              select: "user rating comment",
+              populate: { path: "user", select: "name lastname email" },
+            })
+            .sort({ price: 1 });
+        } else {
+          productsfiltered = productsfiltered.filter((product) => {
+            product.price >= Number(minprice) ||
+              product.price <= Number(maxprice);
           });
           //order ascendent
           productsfiltered = productsfiltered.sort((a, b) => {
@@ -42,8 +45,7 @@ const filter = async (req, res, next) => {
             return 0;
           });
         }
-      }
-      else if (productsfiltered.length == 0) {
+      } else if (productsfiltered.length == 0) {
         //first filter: get products from the db
         productsfiltered = await Product.find({ isDeleted: false })
           .populate({
@@ -59,7 +61,7 @@ const filter = async (req, res, next) => {
         //console.log("BD", productsfiltered);
       } else {
         //comes filtered previously
-          productsfiltered = productsfiltered.sort((a, b) => {
+        productsfiltered = productsfiltered.sort((a, b) => {
           if (a.price > b.price) {
             return price === "des" ? -1 : 1;
           } else if (a.price < b.price) {
@@ -119,7 +121,9 @@ const filter = async (req, res, next) => {
           });
       }
       //comes filtered previously
-      productsfiltered = productsfiltered.filter((product) => product.category.name == category); 
+      productsfiltered = productsfiltered.filter(
+        (product) => product.category.name == category
+      );
     }
     req.products = productsfiltered;
     next();

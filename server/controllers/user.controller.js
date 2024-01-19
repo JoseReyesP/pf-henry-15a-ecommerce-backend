@@ -23,7 +23,8 @@ const create = async (req, res) => {
 const list = async (req, res) => {
   try {
     let users =
-      req.headers.origin == "https://admindashboard.up.railway.app"
+      req.headers.origin == "https://admindashboard.up.railway.app" ||
+      "http://localhost:3000"
         ? await User.find()
             .select(
               "name lastname email address updated shoppingCart created role favorites"
