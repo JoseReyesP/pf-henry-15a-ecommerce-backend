@@ -22,6 +22,13 @@ const UserSchema = new mongoose.Schema({
     unique: true,
     match: [/.+\@.+\..+/, "Please fill a valid email address"],
     required: "Email is required",
+    validate: {
+      validator: async function (value) {
+        const user = await mongoose.model("User").findOne({ email: value });
+        return !user;
+      },
+      message: "Email address must be unique",
+    },
   },
   address: {
     type: String,
