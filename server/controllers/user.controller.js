@@ -76,7 +76,7 @@ const read = (req, res) => {
       .createHmac("sha1", req.profile.hashed_password)
       .update(req.profile.salt)
       .digest("hex");
-    req.decryptedPassword = decryptedPassword;
+    req.profile.decryptedPassword = decryptedPassword;
   } catch (error) {
     console.log("🚀 ~ read ~ error:", error);
   }
