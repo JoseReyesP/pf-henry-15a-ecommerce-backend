@@ -1,23 +1,29 @@
 import Photos from "../models/photos.model.js";
 
 const create = async (req, res) => {
-  const photo = new Photos({
-    name: req.file.originalname,
-    photoData: {
-      data: req.file.buffer,
-      contentType: req.file.mimetype,
-    },
-  });
-  try {
-    await photo.save();
-    res.set("Content-Type", req.file.mimetype);
-    res.setHeader("Content-Security-Policy", "img-src 'self' data:;");
-    res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
+  if (req.file.buffer.length > 0) {
+    const photo = new Photos({
+      name: req.file.originalname,
+      photoData: {
+        data: req.file.buffer,
+        contentType: req.file.mimetype,
+      },
+    });
+    try {
+      await photo.save();
+      res.set("Content-Type", req.file.mimetype);
+      res.setHeader("Content-Security-Policy", "img-src 'self' data:;");
+      res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
+      return res
+        .status(200)
+        .json({ message: "Photo successfuly created!", id: photo._id });
+    } catch (err) {
+      return res.status(500).send({ error: err });
+    }
+  } else {
     return res
-      .status(200)
-      .json({ message: "Photo successfuly created!", id: photo._id });
-  } catch (err) {
-    return res.status(500).send({ error: err });
+      .status(400)
+      .send({ error: "Not a valid photo format or empty file" });
   }
 };
 
