@@ -25,7 +25,7 @@ const list = async (req, res) => {
       "http://localhost:3000"
         ? await Review.find().select("user product rating comment").populate({
             path: "user",
-            select: "name lastname email",
+            select: "name lastname email isDeleted",
           })
         : await Review.find({ isDeleted: false })
             .select("user product rating comment")
@@ -106,7 +106,7 @@ const listPerUser = async (req, res) => {
     let reviews =
       req.headers.origin == "https://admindashboard.up.railway.app" ||
       "http://localhost:3000"
-        ? await Review.find().select("user product rating comment")
+        ? await Review.find().select("user product rating comment isDeleted")
         : await Review.find({ isDeleted: false }).select(
             "user product rating comment"
           );
