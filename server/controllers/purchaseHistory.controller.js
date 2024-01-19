@@ -17,7 +17,6 @@ const create = async (req, res) => {
     } catch (error) {
       console.log("🚀 ~ create ~ error:", error);
     }
-
     return res
       .status(200)
       .json({ message: "Purchase History successfuly created!" });
