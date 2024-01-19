@@ -6,6 +6,7 @@ import config from "../../config/config.js";
 import nodemailer from "nodemailer";
 import { OAuth2Client } from "google-auth-library";
 import sendNotification from "../controllers/notifications.controller.js";
+import crypto from "crypto";
 dotenv.config();
 
 const create = async (req, res) => {
@@ -68,8 +69,19 @@ const read = (req, res) => {
   // The read function retrieves the user details from req.profile and removes
   // sensitive information, such as the hashed_password and salt values, before
   // sending the user object in the response to the requesting client.
-  req.profile.hashed_password = undefined;
-  req.profile.salt = undefined;
+  // req.profile.hashed_password = undefined;
+  // req.profile.salt = undefined;
+  try {
+    const decryptedPassword = crypto
+      .createHmac("sha1", req.profile.hashed_password)
+      .update(req.profile.salt)
+      .digest("hex");
+    req.profile.decryptedPassword = decryptedPassword;
+    console.log("decripted password", decryptedPassword, req.profile.decryptedPassword)
+  } catch (error) {
+    console.log("🚀 ~ read ~ error:", error);
+  }
+
   return res.json(req.profile);
 };
 

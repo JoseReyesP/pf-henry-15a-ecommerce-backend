@@ -8,7 +8,15 @@ const create = async (req, res) => {
     await purchaseHistory.save();
     const user = await User.findById(req.body.user);
     user.purchaseHistory.push(purchaseHistory._id);
-    user.save();
+    console.log("🚀 ~ create ~ user:", user);
+    try {
+      await User.updateOne(
+        { _id: user.id },
+        { $push: { purchaseHistory: purchaseHistory._id } }
+      );
+    } catch (error) {
+      console.log("🚀 ~ create ~ error:", error);
+    }
     return res
       .status(200)
       .json({ message: "Purchase History successfuly created!" });
