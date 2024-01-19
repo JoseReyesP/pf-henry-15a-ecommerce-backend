@@ -77,6 +77,7 @@ const read = (req, res) => {
       .update(req.profile.salt)
       .digest("hex");
     req.profile.decryptedPassword = decryptedPassword;
+    console.log("decripted password", decryptedPassword, req.profile.decryptedPassword)
   } catch (error) {
     console.log("🚀 ~ read ~ error:", error);
   }
